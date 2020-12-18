@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+
+# CSS Modules
+!*.modules.css
+!*.module.scss
+!*.module.sass
