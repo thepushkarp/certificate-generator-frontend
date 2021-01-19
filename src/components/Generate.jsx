@@ -5,48 +5,51 @@ class Generate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isCsvUploaded: false,
       isImgUploaded: false,
       isUploadButtonPressed: false,
       certImage: null,
-      csvFile: null,
-      certWidth: 0,
-      certHeight: 0,
     };
+    this.cert_canvas = React.createRef();
+    this.fillCanvas = this.fillCanvas.bind(this);
+    this.fields = [
+      'Name',
+      'Position',
+      'Organization',
+      'Academic Year',
+      'Date',
+      'Certificate Number',
+    ];
   }
+
+  fillCanvas = () => {
+    const canvas = this.cert_canvas.current;
+    console.log(canvas);
+    canvas.height = this.state.certHeight;
+    canvas.width = this.state.certWidth;
+    const ctx = canvas.getContext('2d');
+    const img = this.state.certImage;
+    ctx.drawImage(img, 0, 0);
+    ctx.lineWidth = 1;
+    ctx.font = '64px sans-serif';
+    for (var i in this.fields) {
+      ctx.fillText(this.fields[i], 100 + 100 * i, 100 + 100 * i);
+    }
+  };
 
   render() {
     return (
       <>
-        {this.state.isUploadButtonPressed && (
-          <div
-            style={{
-              height: this.state.height,
-              weight: this.state.width,
-              backgroundImage: `url(${this.state.certImage})`,
-            }}
-          ></div>
-        )}
+        <Jumbotron
+          style={{
+            display: true ? 'block' : 'none',
+          }}
+        >
+          <canvas id="cert_canvas" ref={this.cert_canvas} width="0" height="0" />
+        </Jumbotron>
         {!this.state.isUploadButtonPressed && (
           <Jumbotron>
-            <h1 align="center">Upload the CSV and Certificate Image</h1>
+            <h1 align="center">Upload the Certificate Image</h1>
             <Form>
-              <Form.Group>
-                <Form.Label>Upload the CSV File</Form.Label>
-                <Form.Row>
-                  <Form.File
-                    id="csvForm"
-                    accept=".csv"
-                    onChange={(e) => {
-                      if (e.target.files[0]) {
-                        this.setState({ isCsvUploaded: true });
-                      } else {
-                        this.setState({ isCsvUploaded: false });
-                      }
-                    }}
-                  />
-                </Form.Row>
-              </Form.Group>
               <Form.Group>
                 <Form.Label>Upload the Certificate Image</Form.Label>
                 <Form.Row>
@@ -61,7 +64,7 @@ class Generate extends React.Component {
                         img.onload = () => {
                           this.setState({
                             isImgUploaded: true,
-                            certImage: imgUrl,
+                            certImage: img,
                             certWidth: img.width,
                             certHeight: img.height,
                           });
@@ -74,18 +77,24 @@ class Generate extends React.Component {
                 </Form.Row>
               </Form.Group>
               <div align="center">
-                <p>{`Uploaded ${
-                  1 * this.state.isCsvUploaded + 1 * this.state.isImgUploaded
-                }/2 files`}</p>
+                <p>
+                  The Certificate Image is{' '}
+                  {this.state.isImgUploaded ? (
+                    <span style={{ color: 'green' }}>added</span>
+                  ) : (
+                    <span style={{ color: 'red' }}>not added</span>
+                  )}
+                </p>
                 <Button
                   variant="primary"
                   size="lg"
                   type="submit"
-                  disabled={!(this.state.isCsvUploaded && this.state.isImgUploaded)}
-                  onClick={(e) => {
+                  disabled={!this.state.isImgUploaded}
+                  onClick={() => {
                     this.setState({
                       isUploadButtonPressed: true,
                     });
+                    this.fillCanvas();
                   }}
                 >
                   Upload
