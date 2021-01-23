@@ -9,6 +9,8 @@ class Generate extends React.Component {
       isImgUploaded: false,
       isUploadButtonPressed: false,
       certImage: null,
+      certWidth: 0,
+      certHeight: 0,
     };
     this.cert_canvas = React.createRef();
     this.fillCanvas = this.fillCanvas.bind(this);
@@ -40,8 +42,12 @@ class Generate extends React.Component {
   downloadPDF = () => {
     const canvas = this.cert_canvas.current;
     var imgData = canvas.toDataURL('image/jpeg', 1.0);
-    var pdf = new jsPDF();
-    pdf.addImage(imgData, 'JPEG', 0, 0);
+    var pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [canvas.width, canvas.height],
+    });
+    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
     pdf.save('certificate.pdf');
   };
 
@@ -54,13 +60,14 @@ class Generate extends React.Component {
           }}
           align="center"
         >
-          <h1>Drag the labels to appropriate positions</h1>
+          <h2>Drag the labels to appropriate positions</h2>
           <canvas
             id="cert_canvas"
             ref={this.cert_canvas}
             style={{ width: '100%' }}
             width="0"
             height="0"
+            className="my-5"
           />
           <Button
             variant="primary"
@@ -95,6 +102,7 @@ class Generate extends React.Component {
                             certWidth: img.width,
                             certHeight: img.height,
                           });
+                          console.log(this.state.certWidth, this.state.certHeight);
                         };
                       } else {
                         this.setState({ isImgUploaded: false });
