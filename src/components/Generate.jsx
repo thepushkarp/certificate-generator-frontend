@@ -1,5 +1,6 @@
 import React from 'react';
 import { Jumbotron, Button, Form } from 'react-bootstrap';
+import { jsPDF } from 'jspdf';
 
 class Generate extends React.Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class Generate extends React.Component {
     };
     this.cert_canvas = React.createRef();
     this.fillCanvas = this.fillCanvas.bind(this);
+    this.downloadPDF = this.downloadPDF.bind(this);
     this.fields = [
       'Name',
       'Position',
@@ -23,7 +25,6 @@ class Generate extends React.Component {
 
   fillCanvas = () => {
     const canvas = this.cert_canvas.current;
-    console.log(canvas);
     canvas.height = this.state.certHeight;
     canvas.width = this.state.certWidth;
     const ctx = canvas.getContext('2d');
@@ -36,15 +37,41 @@ class Generate extends React.Component {
     }
   };
 
+  downloadPDF = () => {
+    const canvas = this.cert_canvas.current;
+    var imgData = canvas.toDataURL('image/jpeg', 1.0);
+    var pdf = new jsPDF();
+    pdf.addImage(imgData, 'JPEG', 0, 0);
+    pdf.save('certificate.pdf');
+  };
+
   render() {
     return (
       <>
         <Jumbotron
           style={{
-            display: true ? 'block' : 'none',
+            display: this.state.isUploadButtonPressed ? 'block' : 'none',
           }}
+          align="center"
         >
-          <canvas id="cert_canvas" ref={this.cert_canvas} width="0" height="0" />
+          <h1>Drag the labels to appropriate positions</h1>
+          <canvas
+            id="cert_canvas"
+            ref={this.cert_canvas}
+            style={{ width: '100%' }}
+            width="0"
+            height="0"
+          />
+          <Button
+            variant="primary"
+            size="lg"
+            type="submit"
+            onClick={() => {
+              this.downloadPDF();
+            }}
+          >
+            Download Certificate
+          </Button>
         </Jumbotron>
         {!this.state.isUploadButtonPressed && (
           <Jumbotron>
@@ -97,7 +124,7 @@ class Generate extends React.Component {
                     this.fillCanvas();
                   }}
                 >
-                  Upload
+                  Upload Certificate Image
                 </Button>
               </div>
             </Form>
