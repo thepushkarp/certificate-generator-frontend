@@ -14,7 +14,7 @@ class Generate extends React.Component {
     };
     this.cert_canvas = React.createRef();
     this.fillCanvas = this.fillCanvas.bind(this);
-    this.downloadPDF = this.downloadPDF.bind(this);
+    this.downloadPDFs = this.downloadPDFs.bind(this);
     this.fields = [
       'Name',
       'Position',
@@ -39,7 +39,7 @@ class Generate extends React.Component {
     }
   };
 
-  downloadPDF = () => {
+  downloadPDFs = () => {
     const canvas = this.cert_canvas.current;
     var imgData = canvas.toDataURL('image/jpeg', 1.0);
     var pdf = new jsPDF({
@@ -48,7 +48,12 @@ class Generate extends React.Component {
       format: [canvas.width, canvas.height],
     });
     pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-    pdf.save('certificate.pdf');
+    pdf.save(
+      `certificate-${new Date()
+        .toLocaleDateString('gu-IN')
+        .split('/')
+        .join('-')}.pdf`
+    );
   };
 
   render() {
@@ -74,44 +79,39 @@ class Generate extends React.Component {
             size="lg"
             type="submit"
             onClick={() => {
-              this.downloadPDF();
+              this.downloadPDFs();
             }}
           >
-            Download Certificate
+            Download Certificates
           </Button>
         </Jumbotron>
         {!this.state.isUploadButtonPressed && (
           <Jumbotron>
             <h1 align="center">Upload the Certificate Image</h1>
-            <Form>
-              <Form.Group>
-                <Form.Label>Upload the Certificate Image</Form.Label>
-                <Form.Row>
-                  <Form.File
-                    id="imgForm"
-                    accept="image/jpeg, image/png"
-                    onChange={(e) => {
-                      if (e.target.files[0]) {
-                        var imgUrl = URL.createObjectURL(e.target.files[0]);
-                        var img = new Image();
-                        img.src = imgUrl;
-                        img.onload = () => {
-                          this.setState({
-                            isImgUploaded: true,
-                            certImage: img,
-                            certWidth: img.width,
-                            certHeight: img.height,
-                          });
-                          console.log(this.state.certWidth, this.state.certHeight);
-                        };
-                      } else {
-                        this.setState({ isImgUploaded: false });
-                      }
-                    }}
-                  />
-                </Form.Row>
-              </Form.Group>
-              <div align="center">
+            <Form align="center" className="my-5">
+              <Form.File
+                id="imgForm"
+                accept="image/jpeg, image/png"
+                onChange={(e) => {
+                  if (e.target.files[0]) {
+                    var imgUrl = URL.createObjectURL(e.target.files[0]);
+                    var img = new Image();
+                    img.src = imgUrl;
+                    img.onload = () => {
+                      this.setState({
+                        isImgUploaded: true,
+                        certImage: img,
+                        certWidth: img.width,
+                        certHeight: img.height,
+                      });
+                      console.log(this.state.certWidth, this.state.certHeight);
+                    };
+                  } else {
+                    this.setState({ isImgUploaded: false });
+                  }
+                }}
+              />
+              <div className="my-3">
                 <p>
                   The Certificate Image is{' '}
                   {this.state.isImgUploaded ? (
