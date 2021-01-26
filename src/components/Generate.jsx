@@ -9,8 +9,6 @@ class Generate extends React.Component {
       isImgUploaded: false,
       isUploadButtonPressed: false,
       certImage: null,
-      certWidth: 0,
-      certHeight: 0,
       labelIdx: -1,
     };
     this.cert_canvas = React.createRef();
@@ -23,40 +21,52 @@ class Generate extends React.Component {
     this.makeCertificate = this.makeCertificate.bind(this);
     this.downloadPDF = this.downloadPDF.bind(this);
     this.fields = [
-      { text: 'Name', x: 100, y: 100, isDragged: false },
-      { text: 'Position', x: 200, y: 200, isDragged: false },
-      { text: 'Organization', x: 300, y: 300, isDragged: false },
-      { text: 'Academic Year', x: 400, y: 400, isDragged: false },
-      { text: 'Date', x: 500, y: 500, isDragged: false },
-      { text: 'Certificate Number', x: 600, y: 600, isDragged: false },
+      { text: 'Name', x: 100, y: 100, font: 64, isDragged: false },
+      { text: 'Position', x: 200, y: 200, font: 64, isDragged: false },
+      { text: 'Organization', x: 300, y: 300, font: 64, isDragged: false },
+      { text: 'Academic Year', x: 400, y: 400, font: 64, isDragged: false },
+      { text: 'Date', x: 500, y: 500, font: 64, isDragged: false },
+      { text: 'Certificate Number', x: 600, y: 600, font: 36, isDragged: false },
     ];
   }
 
+  /*
+  Clears all text from canvas leaving only certificate image
+  */
   clearCanvas = () => {
     const canvas = this.cert_canvas.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.state.certWidth, this.state.certHeight);
-    const img = this.state.certImage;
-    ctx.drawImage(img, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(this.state.certImage, 0, 0);
   };
 
+  /*
+  Adds all the text from the text field to the respective location
+  */
   addTexts = () => {
     const canvas = this.cert_canvas.current;
     const ctx = canvas.getContext('2d');
     this.clearCanvas();
     for (var field of this.fields) {
+      ctx.font = `${field.font}px sans-serif`;
       ctx.fillText(field.text, field.x, field.y);
     }
   };
 
+  /*
+  Creates the initial canvas and returns its context
+  */
   initCanvas = () => {
     const canvas = this.cert_canvas.current;
-    canvas.width = this.state.certWidth;
-    canvas.height = this.state.certHeight;
+    canvas.width = this.state.certImage.width;
+    canvas.height = this.state.certImage.height;
     const ctx = canvas.getContext('2d');
     return ctx;
   };
 
+  /*
+  On leaving mouse click, sets all text dragging property to false
+  */
   onMouseUp(e) {
     for (var field of this.fields) {
       field.isDragged = false;
@@ -67,15 +77,18 @@ class Generate extends React.Component {
     e.preventDefault();
   }
 
+  /*
+  Moves the text which is draggable, with mouse movement
+  */
   onMouseMove(e) {
     const canvas = this.cert_canvas.current;
-    var i = this.state.labelIdx;
+    const i = this.state.labelIdx;
     if (i !== -1 && this.fields[i].isDragged) {
-      var scaledCanvas = canvas.getBoundingClientRect();
-      var canX =
+      const scaledCanvas = canvas.getBoundingClientRect();
+      const canX =
         ((e.pageX - scaledCanvas.left - window.scrollX) / scaledCanvas.width) *
         canvas.width;
-      var canY =
+      const canY =
         ((e.pageY - scaledCanvas.top - window.scrollY) / scaledCanvas.height) *
         canvas.height;
       this.fields[i].x = canX;
@@ -85,43 +98,38 @@ class Generate extends React.Component {
     e.preventDefault();
   }
 
+  /*
+  Searches the box where the pointer is and sets its draggable property to true
+  */
   onMouseDown(e) {
     const canvas = this.cert_canvas.current;
-    var scaledCanvas = canvas.getBoundingClientRect();
-    var canX =
+    const scaledCanvas = canvas.getBoundingClientRect();
+    const canX =
       ((e.pageX - scaledCanvas.left - window.scrollX) / scaledCanvas.width) *
       canvas.width;
-    var canY =
+    const canY =
       ((e.pageY - scaledCanvas.top - window.scrollY) / scaledCanvas.height) *
       canvas.height;
-    // console.log(e.pageX - canvas.offsetLeft);
-    // console.log(e.pageY - canvas.offsetTop);
-    // console.log(canvas.width, canvas.height);
-    // console.log(scaledCanvas);
-    console.log(canX, canY);
-    var i, x, y;
+    var i,
+      x,
+      y,
+      flag = false;
     for (i in this.fields) {
-      var field = this.fields[i];
-
-      var textLength = field.text.length * 64;
-      var textHeight = 64;
+      const field = this.fields[i];
+      const fontSize = field.font;
+      const textLength = field.text.length * fontSize;
+      const textHeight = fontSize;
       x = field.x;
       y = field.y;
-      // console.log('x, y, textLength:', x, y, textLength);
-      console.log('i, canX, val\n', i, canX, x + textLength);
-      console.log('i, canX, val\n', i, canX, x);
-      console.log('i, canY, val\n', i, canY, y - textHeight);
-      console.log('i, canY, val\n', i, canY, y);
       if (canX < x + textLength && canX > x && canY > y - textHeight && canY < y) {
-        this.setState({
-          labelIdx: i,
-        });
-        console.log('chosen', i);
+        flag = true;
         break;
       }
     }
-    console.log(this.state.labelIdx);
-    if (this.state.labelIdx !== null) {
+    if (flag === true) {
+      this.setState({
+        labelIdx: i,
+      });
       this.fields[i].x = canX;
       this.fields[i].y = canY;
       this.addTexts();
@@ -130,17 +138,23 @@ class Generate extends React.Component {
     e.preventDefault();
   }
 
+  /*
+  Creates the certificate initially and add texts with default location
+  */
   makeCertificate = () => {
     const ctx = this.initCanvas();
     ctx.lineWidth = 1;
-    ctx.font = '64px sans-serif';
     this.addTexts();
   };
 
+  /*
+  Downloads the PDF of the certificate
+  */
   downloadPDF = () => {
     const canvas = this.cert_canvas.current;
-    var imgData = canvas.toDataURL('image/jpeg', 1.0);
-    var pdf = new jsPDF({
+    const quality = 0.5;
+    const imgData = canvas.toDataURL('image/png', quality);
+    const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'px',
       format: [canvas.width, canvas.height],
@@ -202,8 +216,6 @@ class Generate extends React.Component {
                       this.setState({
                         isImgUploaded: true,
                         certImage: img,
-                        certWidth: img.width,
-                        certHeight: img.height,
                       });
                     };
                   } else {
