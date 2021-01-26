@@ -1,12 +1,16 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
-import logo from '../logo.jpg';
+import logo from '../assets/logo.jpg';
 
 class Navigation extends React.Component {
   render() {
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/">
+        <Navbar.Brand
+          href="http://iiitvadodara.ac.in/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <img
             src={logo}
             width="60"
@@ -19,6 +23,7 @@ class Navigation extends React.Component {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/generate">Generate Certificates</Nav.Link>
             <Nav.Link href="http://cert-iiit.tk/">Verify Certificates</Nav.Link>
           </Nav>
         </Navbar.Collapse>
