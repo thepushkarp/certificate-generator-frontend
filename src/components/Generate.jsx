@@ -1,15 +1,17 @@
 import React from 'react';
 import { Jumbotron, Button, Form } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 class Generate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isImgUploaded: false,
-      isUploadButtonPressed: false,
-      certImage: null,
-      labelIdx: -1,
+      isImgUploaded: false, // To check if image is uploaded
+      isUploadButtonPressed: false, //To check if user has pressed the upload button
+      certImage: null, // Image of certificate
+      labelIdx: -1, // Index of the label which is currently uploaded
     };
     this.cert_canvas = React.createRef();
     this.clearCanvas = this.clearCanvas.bind(this);
@@ -19,7 +21,8 @@ class Generate extends React.Component {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.makeCertificate = this.makeCertificate.bind(this);
-    this.downloadPDF = this.downloadPDF.bind(this);
+    this.downloadZip = this.downloadZip.bind(this);
+    // Dummy data
     this.fields = [
       { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
       { text: 'Position', x: 400, y: 400, font: 64, isDragged: false },
@@ -48,6 +51,7 @@ class Generate extends React.Component {
     const ctx = canvas.getContext('2d');
     this.clearCanvas();
     for (var field of this.fields) {
+      // 0.0003 because it scaled the font well
       ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
       ctx.fillText(field.text, field.x, field.y);
     }
@@ -116,6 +120,7 @@ class Generate extends React.Component {
       flag = false;
     for (i in this.fields) {
       const field = this.fields[i];
+      // 0.0003 because it scaled the font well
       const fontSize = 0.0003 * field.font * canvas.width;
       const textLength = field.text.length * fontSize;
       const textHeight = fontSize;
@@ -148,11 +153,18 @@ class Generate extends React.Component {
   };
 
   /*
-  Downloads the PDF of the certificate
+  Downloads the Zip of all the PDFs
   */
-  downloadPDF = () => {
+  downloadZip = () => {
     const canvas = this.cert_canvas.current;
     const quality = 0.5;
+    const zip = new JSZip();
+    const zipName = `certificate-${new Date()
+      .toLocaleDateString('gu-IN')
+      .split('/')
+      .join('-')}.zip`;
+
+    // Implemented from: https://stackoverflow.com/a/56783750/10307491
     const imgData = canvas.toDataURL('image/jpeg', quality);
     const pdf = new jsPDF({
       orientation: 'landscape',
@@ -160,12 +172,11 @@ class Generate extends React.Component {
       format: [canvas.width, canvas.height],
     });
     pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-    pdf.save(
-      `certificate-${new Date()
-        .toLocaleDateString('gu-IN')
-        .split('/')
-        .join('-')}.pdf`
-    );
+    var pdfName = 'Certificate.pdf';
+    zip.file(pdfName, pdf.output('blob'));
+    zip.generateAsync({ type: 'blob' }).then(function (content) {
+      saveAs(content, zipName);
+    });
   };
 
   render() {
@@ -194,7 +205,7 @@ class Generate extends React.Component {
             size="lg"
             type="submit"
             onClick={() => {
-              this.downloadPDF();
+              this.downloadZip();
             }}
           >
             Download Certificates
