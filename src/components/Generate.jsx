@@ -12,7 +12,10 @@ class Generate extends React.Component {
       isUploadButtonPressed: false, //To check if user has pressed the upload button
       certImage: null, // Image of certificate
       labelIdx: -1, // Index of the label which is currently uploaded
+      isSizeUploadable: true,
+      isResolutionUploadable: true,
     };
+
     this.cert_canvas = React.createRef();
     this.clearCanvas = this.clearCanvas.bind(this);
     this.addTexts = this.addTexts.bind(this);
@@ -228,14 +231,29 @@ class Generate extends React.Component {
                 accept="image/jpeg, image/png"
                 onChange={(e) => {
                   if (e.target.files[0]) {
+                    if (e.target.files[0].size > 1048576) {
+                      this.setState({
+                        isSizeUploadable: false,
+                      });
+                      return;
+                    }
                     var imgUrl = URL.createObjectURL(e.target.files[0]);
                     var img = new Image();
                     img.src = imgUrl;
                     img.onload = () => {
-                      this.setState({
-                        isImgUploaded: true,
-                        certImage: img,
-                      });
+                      if (img.width < 1754 && img.height < 1240) {
+                        this.setState({
+                          isResolutionUploadable: false,
+                          isSizeUploadable: true,
+                        });
+                      } else {
+                        this.setState({
+                          isImgUploaded: true,
+                          certImage: img,
+                          isResolutionUploadable: true,
+                          isSizeUploadable: true,
+                        });
+                      }
                     };
                   } else {
                     this.setState({ isImgUploaded: false });
@@ -244,11 +262,30 @@ class Generate extends React.Component {
               />
               <div className="my-3">
                 <p>
-                  The Certificate Image is{' '}
-                  {this.state.isImgUploaded ? (
-                    <span style={{ color: 'green' }}>added</span>
+                  {this.state.isSizeUploadable ? (
+                    <React.Fragment>
+                      {this.state.isImgUploaded ? (
+                        <React.Fragment>
+                          The Certificate Image is{' '}
+                          <span style={{ color: 'green' }}>added</span>
+                        </React.Fragment>
+                      ) : this.state.isResolutionUploadable ? (
+                        <React.Fragment>
+                          The Certificate Image is{' '}
+                          <span style={{ color: 'red' }}>not added</span>
+                        </React.Fragment>
+                      ) : (
+                        <React.Fragment>
+                          <span style={{ color: 'red' }}>
+                            Minimum Dimensions of the image should be 1754 x 1240.
+                          </span>
+                        </React.Fragment>
+                      )}
+                    </React.Fragment>
                   ) : (
-                    <span style={{ color: 'red' }}>not added</span>
+                    <span style={{ color: 'red' }}>
+                      The Maximum Size of image is 1MB.
+                    </span>
                   )}
                 </p>
                 <Button
