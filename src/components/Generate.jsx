@@ -263,23 +263,25 @@ class Generate extends React.Component {
               <div className="my-3">
                 <p>
                   {this.state.isSizeUploadable ? (
-                    <>
-                      {'The Certificate Image is '}
+                    <React.Fragment>
                       {this.state.isImgUploaded ? (
-                        <span style={{ color: 'green' }}>added</span>
+                        <React.Fragment>
+                          The Certificate Image is{' '}
+                          <span style={{ color: 'green' }}>added</span>
+                        </React.Fragment>
                       ) : this.state.isResolutionUploadable ? (
-                        <span style={{ color: 'red' }}>not added</span>
+                        <React.Fragment>
+                          The Certificate Image is{' '}
+                          <span style={{ color: 'red' }}>not added</span>
+                        </React.Fragment>
                       ) : (
-                        <>
-                          <span style={{ color: 'red' }}>Less than Expected.</span>
-                          <br />
-                          <span>
-                            Please have Dimensions greater than or equal to 1754 X
-                            1240.
+                        <React.Fragment>
+                          <span style={{ color: 'red' }}>
+                            Minimum Dimensions of the image should be 1754 x 1240.
                           </span>
-                        </>
+                        </React.Fragment>
                       )}
-                    </>
+                    </React.Fragment>
                   ) : (
                     <span style={{ color: 'red' }}>
                       The Maximum Size of image is 1MB.
