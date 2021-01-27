@@ -27,3 +27,5 @@ package-lock.json
 !*.modules.css
 !*.module.scss
 !*.module.sass
+
+.eslintcache
