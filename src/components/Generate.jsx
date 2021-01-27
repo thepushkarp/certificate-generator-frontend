@@ -153,7 +153,7 @@ class Generate extends React.Component {
   downloadPDF = () => {
     const canvas = this.cert_canvas.current;
     const quality = 0.5;
-    const imgData = canvas.toDataURL('image/png', quality);
+    const imgData = canvas.toDataURL('image/jpeg', quality);
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'px',
