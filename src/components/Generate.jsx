@@ -21,12 +21,12 @@ class Generate extends React.Component {
     this.makeCertificate = this.makeCertificate.bind(this);
     this.downloadPDF = this.downloadPDF.bind(this);
     this.fields = [
-      { text: 'Name', x: 100, y: 100, font: 64, isDragged: false },
-      { text: 'Position', x: 200, y: 200, font: 64, isDragged: false },
-      { text: 'Organization', x: 300, y: 300, font: 64, isDragged: false },
-      { text: 'Academic Year', x: 400, y: 400, font: 64, isDragged: false },
-      { text: 'Date', x: 500, y: 500, font: 64, isDragged: false },
-      { text: 'Certificate Number', x: 600, y: 600, font: 36, isDragged: false },
+      { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
+      { text: 'Position', x: 400, y: 400, font: 64, isDragged: false },
+      { text: 'Organization', x: 600, y: 600, font: 64, isDragged: false },
+      { text: 'Academic Year', x: 800, y: 800, font: 64, isDragged: false },
+      { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
+      { text: 'Certificate Number', x: 1200, y: 1200, font: 36, isDragged: false },
     ];
   }
 
@@ -48,7 +48,7 @@ class Generate extends React.Component {
     const ctx = canvas.getContext('2d');
     this.clearCanvas();
     for (var field of this.fields) {
-      ctx.font = `${field.font}px sans-serif`;
+      ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
       ctx.fillText(field.text, field.x, field.y);
     }
   };
@@ -116,7 +116,7 @@ class Generate extends React.Component {
       flag = false;
     for (i in this.fields) {
       const field = this.fields[i];
-      const fontSize = field.font;
+      const fontSize = 0.0003 * field.font * canvas.width;
       const textLength = field.text.length * fontSize;
       const textHeight = fontSize;
       x = field.x;
