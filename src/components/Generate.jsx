@@ -29,7 +29,7 @@ class Generate extends React.Component {
       { text: 'Organization', x: 600, y: 600, font: 64, isDragged: false },
       { text: 'Academic Year', x: 800, y: 800, font: 64, isDragged: false },
       { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
-      { text: 'Certificate Number', x: 1200, y: 1200, font: 36, isDragged: false },
+      { text: 'Certificate Number', x: 1200, y: 1200, font: 42, isDragged: false },
     ];
   }
 
