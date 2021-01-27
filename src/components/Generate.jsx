@@ -86,6 +86,7 @@ class Generate extends React.Component {
   */
   onMouseMove(e) {
     const canvas = this.cert_canvas.current;
+    const ctx = canvas.getContext('2d');
     const i = this.state.labelIdx;
     if (i !== -1 && this.fields[i].isDragged) {
       const scaledCanvas = canvas.getBoundingClientRect();
@@ -95,8 +96,11 @@ class Generate extends React.Component {
       const canY =
         ((e.pageY - scaledCanvas.top - window.scrollY) / scaledCanvas.height) *
         canvas.height;
-      this.fields[i].x = canX;
-      this.fields[i].y = canY;
+      const field = this.fields[i];
+      const fontSize = 0.0003 * field.font * canvas.width;
+      const textLength = ctx.measureText(field.text).width;
+      field.x = canX - textLength / 2;
+      field.y = canY + fontSize / 2;
       this.addTexts();
     }
     e.preventDefault();
@@ -107,6 +111,7 @@ class Generate extends React.Component {
   */
   onMouseDown(e) {
     const canvas = this.cert_canvas.current;
+    const ctx = canvas.getContext('2d');
     const scaledCanvas = canvas.getBoundingClientRect();
     const canX =
       ((e.pageX - scaledCanvas.left - window.scrollX) / scaledCanvas.width) *
@@ -135,8 +140,11 @@ class Generate extends React.Component {
       this.setState({
         labelIdx: i,
       });
-      this.fields[i].x = canX;
-      this.fields[i].y = canY;
+      const field = this.fields[i];
+      const fontSize = 0.0003 * field.font * canvas.width;
+      const textLength = ctx.measureText(field.text).width;
+      field.x = canX - textLength / 2;
+      field.y = canY + fontSize / 2;
       this.addTexts();
       this.fields[i].isDragged = true;
     }
