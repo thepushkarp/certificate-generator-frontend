@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron } from 'react-bootstrap';
-import { Footer, Navigation, Home, Generate } from './components';
+import { Footer, Navigation, Home, Generate, VerifyPortal } from './components';
 import styles from './App.module.scss';
 
 class App extends React.Component {
@@ -23,6 +23,7 @@ class App extends React.Component {
             <Switch>
               <Route path="/" exact component={() => <Home />} />
               <Route path="/generate" exact component={() => <Generate />} />
+              <Route path="/verify" exact component={() => <VerifyPortal />} />
             </Switch>
           </Router>
         </div>
