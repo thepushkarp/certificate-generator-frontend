@@ -21,9 +21,9 @@ class App extends React.Component {
         <div className={styles.contentDesktop}>
           <Router>
             <Switch>
-              <Route path="/" exact component={() => <Home />} />
               <Route path="/generate" exact component={() => <Generate />} />
               <Route path="/verify" exact component={() => <VerifyPortal />} />
+              <Route path="/" exact component={() => <Home />} />
             </Switch>
           </Router>
         </div>
