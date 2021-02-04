@@ -73,7 +73,7 @@ export class Verify extends Component {
                         .toString()
                         .trim()
                         .split('-')
-                        .join('')
+                        .join('_')
                         .split('/')
                         .join('-')}`
                     );
