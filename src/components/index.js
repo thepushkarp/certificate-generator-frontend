@@ -3,3 +3,4 @@ export { default as Footer } from './Footer';
 export { default as Home } from './Home';
 export { default as Generate } from './Generate';
 export { default as VerifyPortal } from './Verify';
+export { default as Certificate } from './front';

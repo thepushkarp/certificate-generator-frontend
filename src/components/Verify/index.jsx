@@ -16,7 +16,7 @@ class VerifyPortal extends React.Component {
     return (
       <div className={styles.root}>
         {this.state.toBeVerified ? (
-          <Verify />
+          <Verify setCertiState={this.props.setCertiState} />
         ) : (
           <React.Fragment>
             <h1>Verify Certificates</h1>
