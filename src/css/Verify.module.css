@@ -1,0 +1,51 @@
+.root {
+  width: 100vw;
+  height: max-content;
+  background-color: #e9ecef;
+  padding: 64px 32px;
+}
+
+.btn {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border-width: 0;
+  padding: 8px 16px;
+  background-color: #007bff;
+  border-radius: 8px;
+  margin: 10px;
+  height: max-content;
+  width: max-content;
+  color: #fff;
+  font-size: 20px;
+}
+
+.btn:hover {
+  background-color: #026ddf;
+  cursor: pointer;
+}
+
+.btn:focus {
+  outline: none;
+}
+.sub {
+  padding: 8px 16px;
+  background-color: #28a745;
+}
+.input {
+  margin: 0 2px;
+}
+
+.table {
+  width: 100%;
+}
+
+.table_header {
+  background-color: #343a40;
+  color: #fff;
+}
+
+.table_data {
+  padding: 10px;
+}

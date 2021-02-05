@@ -2,11 +2,27 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron } from 'react-bootstrap';
-import { Footer, Navigation, Home, Generate } from './components';
+import {
+  Footer,
+  Navigation,
+  Home,
+  Generate,
+  VerifyPortal,
+  Certificate,
+} from './components';
 import styles from './App.module.scss';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      certificateData: null,
+    };
+  }
+
   render() {
+    console.log(this.state);
     return (
       <>
         <Navigation />
@@ -21,8 +37,16 @@ class App extends React.Component {
         <div className={styles.contentDesktop}>
           <Router>
             <Switch>
-              <Route path="/" exact component={() => <Home />} />
               <Route path="/generate" exact component={() => <Generate />} />
+              <Route
+                path="/verify"
+                exact
+                component={() => (
+                  <VerifyPortal setCertiState={this.setState.bind(this)} />
+                )}
+              />
+              <Route path="/certificate/:id" exact component={Certificate} />
+              <Route path="/" exact component={() => <Home />} />
             </Switch>
           </Router>
         </div>

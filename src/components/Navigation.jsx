@@ -24,7 +24,7 @@ class Navigation extends React.Component {
           <Nav className="mr-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/generate">Generate Certificates</Nav.Link>
-            <Nav.Link href="http://cert-iiit.tk/">Verify Certificates</Nav.Link>
+            <Nav.Link href="/verify">Verify Certificates</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

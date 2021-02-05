@@ -192,7 +192,7 @@ class Generate extends React.Component {
 
   render() {
     return (
-      <>
+      <React.Fragment>
         <Jumbotron
           style={{
             display: this.state.isUploadButtonPressed ? 'block' : 'none',
@@ -306,7 +306,7 @@ class Generate extends React.Component {
             </Form>
           </Jumbotron>
         )}
-      </>
+      </React.Fragment>
     );
   }
 }

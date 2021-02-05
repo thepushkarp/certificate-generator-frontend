@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "^4.5.3",
+    "clsx": "^1.1.1",
     "file-saver": "^2.0.5",
     "jspdf": "^2.3.0",
     "jszip": "^3.5.0",
