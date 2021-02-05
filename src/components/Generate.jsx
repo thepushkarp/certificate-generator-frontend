@@ -29,13 +29,28 @@ class Generate extends React.Component {
     this.fields = [
       { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
       { text: 'Position', x: 400, y: 400, font: 64, isDragged: false },
-      { text: 'Organization', x: 600, y: 600, font: 64, isDragged: false },
+      { text: 'Sub Event Name', x: 600, y: 600, font: 64, isDragged: false },
       { text: 'Academic Year', x: 800, y: 800, font: 64, isDragged: false },
       { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
-      { text: 'Certificate Number', x: 1200, y: 1200, font: 42, isDragged: false },
+      { text: 'Certificate ID', x: 1200, y: 1200, font: 42, isDragged: false },
     ];
+    this.result_data = [];
   }
-
+  componentDidMount() {
+    var result = [];
+    fetch('data.json')
+      .then((response) => {
+        // console.log(response.json);
+        return response.json();
+      })
+      .then((data) => {
+        for (const object in data) {
+          result.push(data[object]);
+        }
+        this.setState({ result_data: result });
+        // console.log(this.state.result_data);
+      });
+  }
   /*
   Clears all text from canvas leaving only certificate image
   */
@@ -190,6 +205,41 @@ class Generate extends React.Component {
     });
   };
 
+  replaceText = () => {
+    const quality = 0.5;
+    const zip = new JSZip();
+    const zipName = `certificate-${new Date()
+      .toLocaleDateString('gu-IN')
+      .split('/')
+      .join('-')}.zip`;
+
+    this.state.result_data.forEach((data) => {
+      const canvas = this.cert_canvas.current;
+      const ctx = canvas.getContext('2d');
+      this.clearCanvas();
+      for (var field of this.fields) {
+        // 0.0003 because it scaled the font well
+        ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
+        ctx.fillText(data[field.text], field.x, field.y);
+        // i += 1;
+      }
+
+      const imgData = canvas.toDataURL('image/jpeg', quality);
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+      var pdfName = data['Filename'];
+
+      zip.file(pdfName, pdf.output('blob'));
+    });
+    zip.generateAsync({ type: 'blob' }).then(function (content) {
+      saveAs(content, zipName);
+    });
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -220,6 +270,17 @@ class Generate extends React.Component {
             }}
           >
             Download Certificates
+          </Button>
+          <Button
+            variant="primary"
+            size="lg"
+            type="submit"
+            style={{ marginLeft: 4 }}
+            onClick={() => {
+              this.replaceText();
+            }}
+          >
+            Check
           </Button>
         </Jumbotron>
         {!this.state.isUploadButtonPressed && (
