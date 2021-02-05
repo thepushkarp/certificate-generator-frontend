@@ -45,7 +45,7 @@ class App extends React.Component {
                   <VerifyPortal setCertiState={this.setState.bind(this)} />
                 )}
               />
-              <Route path="/front/certificate/:id" exact component={Certificate} />
+              <Route path="/certificate/:id" exact component={Certificate} />
               <Route path="/" exact component={() => <Home />} />
             </Switch>
           </Router>

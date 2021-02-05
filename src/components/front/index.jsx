@@ -42,7 +42,7 @@ const Certificate = ({ match, location }) => {
           <div className={styles.details}>Year : {state.certificate.year}</div>
           <div className={styles.details}>Issued on : {state.certificate.date}</div>
           <div className={styles.details}>
-            Certificate ID : {state.certificate.id}
+            Certificate ID : {state.certificate.cert_id}
           </div>
           {state.certificate.file ? (
             <React.Fragment>

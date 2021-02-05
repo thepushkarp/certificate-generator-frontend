@@ -17,7 +17,7 @@ export class Verify extends Component {
   render() {
     console.log(this.state);
     if (!this.state.isRollno) {
-      return <Redirect to="/front/certificate/6534765453" />;
+      return <Redirect to="/certificate/6534765453" />;
     } else {
       return (
         <React.Fragment>
@@ -42,7 +42,7 @@ export class Verify extends Component {
                         <td className={styles.table_data}>{ele.year}</td>
                         <td className={styles.table_data}>
                           <a
-                            href={`/front/certificate/${ele.cert_id
+                            href={`/certificate/${ele.cert_id
                               .toString()
                               .trim()
                               .split('-')
@@ -72,7 +72,7 @@ export class Verify extends Component {
                   event.preventDefault();
                   if (event.target[0].value.toString().includes('/')) {
                     this.props.history.push(
-                      `/front/certificate/${event.target[0].value
+                      `/certificate/${event.target[0].value
                         .toString()
                         .trim()
                         .split('-')
