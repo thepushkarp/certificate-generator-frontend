@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import styles from '../../css/Verify.module.css';
 import { Redirect } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-
+import { message, fail } from '../../css/FrontCertificate.module.css';
 export class Verify extends Component {
   constructor(props) {
     super(props);
@@ -15,12 +15,13 @@ export class Verify extends Component {
   }
 
   render() {
+    console.log(this.state);
     if (!this.state.isRollno) {
       return <Redirect to="/front/certificate/6534765453" />;
     } else {
       return (
         <React.Fragment>
-          {!!this.state.data && !this.state.data.message ? (
+          {!!this.state.data && !this.state.data?.message ? (
             <React.Fragment>
               <h1>Certificates Found</h1>
               <table className={styles.table}>
@@ -58,6 +59,8 @@ export class Verify extends Component {
                 </tbody>
               </table>
             </React.Fragment>
+          ) : this.state.data?.message ? (
+            <p className={clsx(message, fail)}>Sorry This ID does not exist</p>
           ) : (
             <div>
               <h1>
