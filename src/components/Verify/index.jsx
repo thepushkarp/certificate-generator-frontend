@@ -1,6 +1,5 @@
 import React from 'react';
 import { Jumbotron, Button } from 'react-bootstrap';
-import styles from '../../css/Verify.module.css';
 import Verify from './Verify';
 
 class VerifyPortal extends React.Component {
