@@ -1,5 +1,5 @@
 import React from 'react';
-import { Jumbotron, Button, Form } from 'react-bootstrap';
+import { Jumbotron, Button, Form, Row } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -14,9 +14,11 @@ class Generate extends React.Component {
       labelIdx: -1, // Index of the label which is currently uploaded
       isSizeUploadable: true,
       isResolutionUploadable: true,
+      resultData: [],
     };
 
     this.cert_canvas = React.createRef();
+
     this.clearCanvas = this.clearCanvas.bind(this);
     this.addTexts = this.addTexts.bind(this);
     this.initCanvas = this.initCanvas.bind(this);
@@ -25,6 +27,7 @@ class Generate extends React.Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.makeCertificate = this.makeCertificate.bind(this);
     this.downloadZip = this.downloadZip.bind(this);
+
     // Dummy data
     this.fields = [
       { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
@@ -34,8 +37,8 @@ class Generate extends React.Component {
       { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
       { text: 'Certificate ID', x: 1200, y: 1200, font: 42, isDragged: false },
     ];
-    this.result_data = [];
   }
+
   componentDidMount() {
     var result = [];
     fetch('data.json')
@@ -47,10 +50,11 @@ class Generate extends React.Component {
         for (const object in data) {
           result.push(data[object]);
         }
-        this.setState({ result_data: result });
-        // console.log(this.state.result_data);
+        this.setState({ resultData: result });
+        // console.log(this.state.resultData);
       });
   }
+
   /*
   Clears all text from canvas leaving only certificate image
   */
@@ -180,9 +184,11 @@ class Generate extends React.Component {
 
   /*
   Downloads the Zip of all the PDFs
+  Implemented from: https://stackoverflow.com/a/56783750/10307491
   */
   downloadZip = () => {
     const canvas = this.cert_canvas.current;
+    const ctx = canvas.getContext('2d');
     const quality = 0.5;
     const zip = new JSZip();
     const zipName = `certificate-${new Date()
@@ -190,38 +196,12 @@ class Generate extends React.Component {
       .split('/')
       .join('-')}.zip`;
 
-    // Implemented from: https://stackoverflow.com/a/56783750/10307491
-    const imgData = canvas.toDataURL('image/jpeg', quality);
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'px',
-      format: [canvas.width, canvas.height],
-    });
-    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-    var pdfName = 'Certificate.pdf';
-    zip.file(pdfName, pdf.output('blob'));
-    zip.generateAsync({ type: 'blob' }).then(function (content) {
-      saveAs(content, zipName);
-    });
-  };
-
-  replaceText = () => {
-    const quality = 0.5;
-    const zip = new JSZip();
-    const zipName = `certificate-${new Date()
-      .toLocaleDateString('gu-IN')
-      .split('/')
-      .join('-')}.zip`;
-
-    this.state.result_data.forEach((data) => {
-      const canvas = this.cert_canvas.current;
-      const ctx = canvas.getContext('2d');
+    this.state.resultData.forEach((data) => {
       this.clearCanvas();
       for (var field of this.fields) {
         // 0.0003 because it scaled the font well
         ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
         ctx.fillText(data[field.text], field.x, field.y);
-        // i += 1;
       }
 
       const imgData = canvas.toDataURL('image/jpeg', quality);
@@ -238,6 +218,19 @@ class Generate extends React.Component {
     zip.generateAsync({ type: 'blob' }).then(function (content) {
       saveAs(content, zipName);
     });
+  };
+
+  /*
+  Replaces default placeholder data with real data to see how the certificate
+  looks
+  */
+  replaceText = () => {
+    const firstData = this.state.resultData[1];
+    for (var i in this.fields) {
+      const field = this.fields[i];
+      field.text = firstData[field.text];
+    }
+    this.addTexts();
   };
 
   render() {
@@ -261,27 +254,31 @@ class Generate extends React.Component {
             height="0"
             className="my-5"
           />
-          <Button
-            variant="primary"
-            size="lg"
-            type="submit"
-            onClick={() => {
-              this.downloadZip();
-            }}
-          >
-            Download Certificates
-          </Button>
-          <Button
-            variant="primary"
-            size="lg"
-            type="submit"
-            style={{ marginLeft: 4 }}
-            onClick={() => {
-              this.replaceText();
-            }}
-          >
-            Check
-          </Button>
+          <Row className="d-flex justify-content-center">
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              style={{ marginLeft: 4 }}
+              onClick={() => {
+                this.replaceText();
+              }}
+              className="ml-3"
+            >
+              Check
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              onClick={() => {
+                this.downloadZip();
+              }}
+              className="ml-3"
+            >
+              Download Certificates
+            </Button>
+          </Row>
         </Jumbotron>
         {!this.state.isUploadButtonPressed && (
           <Jumbotron>
@@ -306,13 +303,14 @@ class Generate extends React.Component {
                         this.setState({
                           isResolutionUploadable: false,
                           isSizeUploadable: true,
+                          isImgUploaded: false,
                         });
                       } else {
                         this.setState({
                           isImgUploaded: true,
-                          certImage: img,
                           isResolutionUploadable: true,
                           isSizeUploadable: true,
+                          certImage: img,
                         });
                       }
                     };
@@ -338,14 +336,15 @@ class Generate extends React.Component {
                       ) : (
                         <React.Fragment>
                           <span style={{ color: 'red' }}>
-                            Minimum Dimensions of the image should be 1754 x 1240.
+                            The minimum dimensions of the image should be 1754 x
+                            1240.
                           </span>
                         </React.Fragment>
                       )}
                     </React.Fragment>
                   ) : (
                     <span style={{ color: 'red' }}>
-                      The Maximum Size of image is 1MB.
+                      The size of image should be under 1 MB.
                     </span>
                   )}
                 </p>
