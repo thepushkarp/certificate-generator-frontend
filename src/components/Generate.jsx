@@ -14,6 +14,7 @@ class Generate extends React.Component {
       labelIdx: -1, // Index of the label which is currently uploaded
       isSizeUploadable: true,
       isResolutionUploadable: true,
+      isCheckButtonPressed: false,
       resultData: [],
     };
 
@@ -225,12 +226,17 @@ class Generate extends React.Component {
   looks
   */
   replaceText = () => {
-    const firstData = this.state.resultData[1];
-    for (var i in this.fields) {
-      const field = this.fields[i];
-      field.text = firstData[field.text];
+    if (this.state.isCheckButtonPressed == false) {
+      const firstData = this.state.resultData[0];
+      for (var i in this.fields) {
+        const field = this.fields[i];
+        field.text = firstData[field.text];
+      }
+      this.addTexts();
+      this.setState({
+        isCheckButtonPressed: true,
+      });
     }
-    this.addTexts();
   };
 
   render() {
