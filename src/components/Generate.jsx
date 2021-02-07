@@ -226,7 +226,7 @@ class Generate extends React.Component {
   looks
   */
   replaceText = () => {
-    if (this.state.isCheckButtonPressed == false) {
+    if (this.state.isCheckButtonPressed === false) {
       const firstData = this.state.resultData[0];
       for (var i in this.fields) {
         const field = this.fields[i];
