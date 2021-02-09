@@ -9,6 +9,7 @@ import {
   Generate,
   VerifyPortal,
   Certificate,
+  Login,
 } from './components';
 import styles from './App.module.scss';
 
@@ -46,6 +47,7 @@ class App extends React.Component {
                 )}
               />
               <Route path="/certificate/:id" exact component={Certificate} />
+              <Route path="/login" exact component={Login} />
               <Route path="/" exact component={() => <Home />} />
             </Switch>
           </Router>
