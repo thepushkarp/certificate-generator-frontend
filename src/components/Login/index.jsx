@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import styles from '../../css/Login.module.css';
 import { btn } from '../../css/Verify.module.css';
 
@@ -11,12 +12,19 @@ export class Login extends React.Component {
           onSubmit={async (event) => {
             event.preventDefault();
             let formdata = new FormData(event.target);
-            const res = await fetch('https://cert-iiit.tk/login', {
-              method: 'POST',
-              body: formdata,
-            });
-            const json = await res.json();
-            console.log(json);
+            const now = Date.now();
+            try {
+              const res = await fetch('https://cert-iiit.tk/login', {
+                method: 'POST',
+                body: formdata,
+              });
+              if (res.status !== 200) throw new Error('Exception message');
+              const json = await res.json();
+
+              this.props.handler(json.token, now + 86400000);
+            } catch (e) {
+              console.log(e);
+            }
           }}
         >
           <div>

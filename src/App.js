@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron } from 'react-bootstrap';
 import {
@@ -19,7 +19,29 @@ class App extends React.Component {
 
     this.state = {
       certificateData: null,
+      loginToken: null,
+      islogedIn: false,
     };
+    this.handler = this.handler.bind(this);
+  }
+  componentDidMount() {
+    const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
+    const time = localStorage.getItem('time') | '';
+    console.log('hello');
+    const loginToken = token === '' ? null : token;
+    if (time < Date.now())
+      this.setState({ ...this.state, loginToken, islogedIn: true });
+  }
+  handler(token, cTime) {
+    console.log('hello');
+    this.setState({
+      ...this.state,
+      loginToken: token,
+      time: cTime,
+      islogedIn: true,
+    });
+    localStorage.setItem('token', token);
+    localStorage.setItem('time', cTime);
   }
 
   render() {
@@ -38,7 +60,13 @@ class App extends React.Component {
         <div className={styles.contentDesktop}>
           <Router>
             <Switch>
-              <Route path="/generate" exact component={() => <Generate />} />
+              <Route path="/generate">
+                {this.state.islogedIn === false ? (
+                  <Redirect to="/login" />
+                ) : (
+                  <Generate />
+                )}
+              </Route>
               <Route
                 path="/verify"
                 exact
@@ -47,7 +75,9 @@ class App extends React.Component {
                 )}
               />
               <Route path="/certificate/:id" exact component={Certificate} />
-              <Route path="/login" exact component={Login} />
+              <Route path="/login">
+                <Login handler={this.handler} />
+              </Route>
               <Route path="/" exact component={() => <Home />} />
             </Switch>
           </Router>
