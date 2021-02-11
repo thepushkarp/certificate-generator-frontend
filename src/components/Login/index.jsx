@@ -1,5 +1,4 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import styles from '../../css/Login.module.css';
 import { btn } from '../../css/Verify.module.css';
 
