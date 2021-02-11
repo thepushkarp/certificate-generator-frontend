@@ -11,7 +11,6 @@ export class Login extends React.Component {
           onSubmit={async (event) => {
             event.preventDefault();
             let formdata = new FormData(event.target);
-            const now = Date.now();
             try {
               const res = await fetch('https://cert-iiit.tk/login', {
                 method: 'POST',
@@ -19,8 +18,9 @@ export class Login extends React.Component {
               });
               if (res.status !== 200) throw new Error('Exception message');
               const json = await res.json();
+              console.log(json);
 
-              this.props.handler(json.token, now + 86400000);
+              this.props.handler(json.token, Date.parse(Date(json.expiry)));
             } catch (e) {
               console.log(e);
             }

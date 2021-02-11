@@ -20,9 +20,14 @@ class App extends React.Component {
     this.state = {
       certificateData: null,
       loginToken: null,
-      islogedIn: false,
+      islogedIn: null,
     };
     this.handler = this.handler.bind(this);
+    const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
+    const time = localStorage.getItem('time') | '';
+    const loginToken = token === '' ? null : token;
+    if (!!token && time < Date.now())
+      this.setState({ ...this.state, loginToken, islogedIn: true });
   }
   componentDidMount() {
     const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
@@ -46,6 +51,15 @@ class App extends React.Component {
 
   render() {
     console.log(this.state);
+    const x = () => {
+      const token = localStorage.getItem('token')
+        ? localStorage.getItem('token')
+        : '';
+      const time = localStorage.getItem('time') | '';
+      // const loginToken = token === '' ? null : token;
+      if (!!token && time < Date.now()) return true;
+      return false;
+    };
     return (
       <>
         <Navigation />
@@ -61,11 +75,7 @@ class App extends React.Component {
           <Router>
             <Switch>
               <Route path="/generate">
-                {this.state.islogedIn === false ? (
-                  <Redirect to="/login" />
-                ) : (
-                  <Generate />
-                )}
+                {x() === false ? <Redirect to="/login" /> : <Generate />}
               </Route>
               <Route
                 path="/verify"
