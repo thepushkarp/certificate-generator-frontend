@@ -1,9 +1,10 @@
 import React from 'react';
-import { Jumbotron, Button, Form } from 'react-bootstrap';
+import { Jumbotron, Button } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-
+import styles from '../css/Login.module.css';
+import { btn } from '../css/Verify.module.css';
 class Generate extends React.Component {
   constructor(props) {
     super(props);
@@ -47,6 +48,7 @@ class Generate extends React.Component {
         for (const object in data) {
           result.push(data[object]);
         }
+
         this.setState({ result_data: result });
         // console.log(this.state.result_data);
       });
@@ -239,7 +241,78 @@ class Generate extends React.Component {
       saveAs(content, zipName);
     });
   };
-
+  uploadData = () => {
+    var apidata = {};
+    return (
+      <div className={styles.root}>
+        <h2>Upload Data</h2>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            let formdata = new FormData(event.target);
+            console.dir(event.target[3].files);
+            var imgUrl = URL.createObjectURL(event.target[3].files[0]);
+            var img = new Image();
+            img.src = imgUrl;
+            img.onload = () => {
+              if (img.width < 1754 && img.height < 1240) {
+                this.setState({
+                  isResolutionUploadable: false,
+                  isSizeUploadable: true,
+                });
+              } else {
+                this.setState({
+                  isImgUploaded: true,
+                  certImage: img,
+                  isResolutionUploadable: true,
+                  isSizeUploadable: true,
+                });
+              }
+            };
+            console.log('formdta', formdata);
+            try {
+              const res = await fetch('https://cert-iiit.tk/generate', {
+                method: 'POST',
+                body: formdata,
+              });
+              if (res.status !== 200) throw new Error('Exception message');
+              apidata = await res.json();
+              console.log(apidata);
+              this.setState({
+                isUploadButtonPressed: true,
+              });
+            } catch (e) {
+              console.log(e);
+            }
+          }}
+        >
+          <div>
+            <label>Event </label>
+            <input className={styles.input} type="text" name="event" />
+          </div>
+          <div>
+            <label>Year </label>
+            <input className={styles.input} type="text" name="year" />
+          </div>
+          <div>
+            <label>CSV </label>
+            <input className={styles.input} type="file" name="csv" accept=".csv" />
+          </div>
+          <div>
+            <label>Certificate </label>
+            <input
+              className={styles.input}
+              type="file"
+              name="image"
+              accept="image/jpeg, image/png"
+            />
+          </div>
+          <input type="hidden" name="token" value={this.props.loginToken} />
+          <input type="submit" className={btn} />
+        </form>
+      </div>
+    );
+  };
   render() {
     return (
       <React.Fragment>
@@ -283,90 +356,90 @@ class Generate extends React.Component {
             Check
           </Button>
         </Jumbotron>
-        {!this.state.isUploadButtonPressed && (
-          <Jumbotron>
-            <h1 align="center">Upload the Certificate Image</h1>
-            <Form align="center" className="my-5">
-              <Form.File
-                id="imgForm"
-                accept="image/jpeg, image/png"
-                onChange={(e) => {
-                  if (e.target.files[0]) {
-                    if (e.target.files[0].size > 1048576) {
-                      this.setState({
-                        isSizeUploadable: false,
-                      });
-                      return;
-                    }
-                    var imgUrl = URL.createObjectURL(e.target.files[0]);
-                    var img = new Image();
-                    img.src = imgUrl;
-                    img.onload = () => {
-                      if (img.width < 1754 && img.height < 1240) {
-                        this.setState({
-                          isResolutionUploadable: false,
-                          isSizeUploadable: true,
-                        });
-                      } else {
-                        this.setState({
-                          isImgUploaded: true,
-                          certImage: img,
-                          isResolutionUploadable: true,
-                          isSizeUploadable: true,
-                        });
-                      }
-                    };
-                  } else {
-                    this.setState({ isImgUploaded: false });
-                  }
-                }}
-              />
-              <div className="my-3">
-                <p>
-                  {this.state.isSizeUploadable ? (
-                    <React.Fragment>
-                      {this.state.isImgUploaded ? (
-                        <React.Fragment>
-                          The Certificate Image is{' '}
-                          <span style={{ color: 'green' }}>added</span>
-                        </React.Fragment>
-                      ) : this.state.isResolutionUploadable ? (
-                        <React.Fragment>
-                          The Certificate Image is{' '}
-                          <span style={{ color: 'red' }}>not added</span>
-                        </React.Fragment>
-                      ) : (
-                        <React.Fragment>
-                          <span style={{ color: 'red' }}>
-                            Minimum Dimensions of the image should be 1754 x 1240.
-                          </span>
-                        </React.Fragment>
-                      )}
-                    </React.Fragment>
-                  ) : (
-                    <span style={{ color: 'red' }}>
-                      The Maximum Size of image is 1MB.
-                    </span>
-                  )}
-                </p>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  type="submit"
-                  disabled={!this.state.isImgUploaded}
-                  onClick={() => {
-                    this.setState({
-                      isUploadButtonPressed: true,
-                    });
-                    this.makeCertificate();
-                  }}
-                >
-                  Upload Certificate Image
-                </Button>
-              </div>
-            </Form>
-          </Jumbotron>
-        )}
+        {!this.state.isUploadButtonPressed &&
+          // <Jumbotron>
+          //   <h1 align="center">Upload data </h1>
+          //   <Form align="center" className="my-5">
+          //     <Form.File
+          //       id="imgForm"
+          //       accept="image/jpeg, image/png"
+          //       onChange={(e) => {
+          //         if (e.target.files[0]) {
+          //           if (e.target.files[0].size > 1048576) {
+          //             this.setState({
+          //               isSizeUploadable: false,
+          //             });
+          //             return;
+          //           }
+          //           var imgUrl = URL.createObjectURL(e.target.files[0]);
+          //           var img = new Image();
+          //           img.src = imgUrl;
+          //           img.onload = () => {
+          //             if (img.width < 1754 && img.height < 1240) {
+          //               this.setState({
+          //                 isResolutionUploadable: false,
+          //                 isSizeUploadable: true,
+          //               });
+          //             } else {
+          //               this.setState({
+          //                 isImgUploaded: true,
+          //                 certImage: img,
+          //                 isResolutionUploadable: true,
+          //                 isSizeUploadable: true,
+          //               });
+          //             }
+          //           };
+          //         } else {
+          //           this.setState({ isImgUploaded: false });
+          //         }
+          //       }}
+          //     />
+          //     <div className="my-3">
+          //       <p>
+          //         {this.state.isSizeUploadable ? (
+          //           <React.Fragment>
+          //             {this.state.isImgUploaded ? (
+          //               <React.Fragment>
+          //                 The Certificate Image is{' '}
+          //                 <span style={{ color: 'green' }}>added</span>
+          //               </React.Fragment>
+          //             ) : this.state.isResolutionUploadable ? (
+          //               <React.Fragment>
+          //                 The Certificate Image is{' '}
+          //                 <span style={{ color: 'red' }}>not added</span>
+          //               </React.Fragment>
+          //             ) : (
+          //               <React.Fragment>
+          //                 <span style={{ color: 'red' }}>
+          //                   Minimum Dimensions of the image should be 1754 x 1240.
+          //                 </span>
+          //               </React.Fragment>
+          //             )}
+          //           </React.Fragment>
+          //         ) : (
+          //           <span style={{ color: 'red' }}>
+          //             The Maximum Size of image is 1MB.
+          //           </span>
+          //         )}
+          //       </p>
+          //       <Button
+          //         variant="primary"
+          //         size="lg"
+          //         type="submit"
+          //         disabled={!this.state.isImgUploaded}
+          //         onClick={() => {
+          //           this.setState({
+          //             isUploadButtonPressed: true,
+          //           });
+          //           this.makeCertificate();
+          //         }}
+          //       >
+          //         Upload Certificate Image
+          //       </Button>
+          //     </div>
+          //   </Form>
+          // </Jumbotron>
+          this.uploadData()}
       </React.Fragment>
     );
   }

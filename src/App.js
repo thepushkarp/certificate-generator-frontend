@@ -75,7 +75,11 @@ class App extends React.Component {
           <Router>
             <Switch>
               <Route path="/generate">
-                {x() === false ? <Redirect to="/login" /> : <Generate />}
+                {x() === false ? (
+                  <Redirect to="/login" />
+                ) : (
+                  <Generate loginToken={this.state.loginToken} />
+                )}
               </Route>
               <Route
                 path="/verify"
