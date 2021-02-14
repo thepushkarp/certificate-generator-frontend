@@ -36,22 +36,7 @@ class Generate extends React.Component {
       { text: 'Certificate ID', x: 1200, y: 1200, font: 42, isDragged: false },
     ];
     this.result_data = [];
-  }
-  componentDidMount() {
-    var result = [];
-    fetch('data.json')
-      .then((response) => {
-        // console.log(response.json);
-        return response.json();
-      })
-      .then((data) => {
-        for (const object in data) {
-          result.push(data[object]);
-        }
-
-        this.setState({ result_data: result });
-        // console.log(this.state.result_data);
-      });
+    this.certID = null;
   }
   /*
   Clears all text from canvas leaving only certificate image
@@ -242,7 +227,6 @@ class Generate extends React.Component {
     });
   };
   uploadData = () => {
-    var apidata = {};
     return (
       <div className={styles.root}>
         <h2>Upload Data</h2>
@@ -250,7 +234,6 @@ class Generate extends React.Component {
           onSubmit={async (event) => {
             event.preventDefault();
             let formdata = new FormData(event.target);
-            console.dir(event.target[3].files);
             var imgUrl = URL.createObjectURL(event.target[3].files[0]);
             var img = new Image();
             img.src = imgUrl;
@@ -269,18 +252,31 @@ class Generate extends React.Component {
                 });
               }
             };
-            console.log('formdta', formdata);
             try {
               const res = await fetch('https://cert-iiit.tk/generate', {
                 method: 'POST',
                 body: formdata,
               });
               if (res.status !== 200) throw new Error('Exception message');
-              apidata = await res.json();
-              console.log(apidata);
+              const result = await res.json();
+              const { cert, columns, ...apiData } = result;
+              const cert_id = cert.id;
+              var resultData = [];
+
+              for (const object in apiData) {
+                resultData.push(apiData[object]);
+              }
+
+              this.setState({
+                ...this.state,
+                result_data: resultData,
+                certID: cert_id,
+              });
+              console.log(this.state);
               this.setState({
                 isUploadButtonPressed: true,
               });
+              this.makeCertificate();
             } catch (e) {
               console.log(e);
             }
