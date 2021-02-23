@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron } from 'react-bootstrap';
 import {
@@ -9,6 +9,7 @@ import {
   Generate,
   VerifyPortal,
   Certificate,
+  Login,
 } from './components';
 import styles from './App.module.scss';
 
@@ -18,11 +19,47 @@ class App extends React.Component {
 
     this.state = {
       certificateData: null,
+      loginToken: null,
+      islogedIn: null,
     };
+    this.handler = this.handler.bind(this);
+    const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
+    const time = localStorage.getItem('time') | '';
+    const loginToken = token === '' ? null : token;
+    if (!!token && time < Date.now())
+      this.setState({ ...this.state, loginToken, islogedIn: true });
+  }
+  componentDidMount() {
+    const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
+    const time = localStorage.getItem('time') | '';
+    console.log('hello');
+    const loginToken = token === '' ? null : token;
+    if (time < Date.now())
+      this.setState({ ...this.state, loginToken, islogedIn: true });
+  }
+  handler(token, cTime) {
+    console.log('hello');
+    this.setState({
+      ...this.state,
+      loginToken: token,
+      time: cTime,
+      islogedIn: true,
+    });
+    localStorage.setItem('token', token);
+    localStorage.setItem('time', cTime);
   }
 
   render() {
     console.log(this.state);
+    const x = () => {
+      const token = localStorage.getItem('token')
+        ? localStorage.getItem('token')
+        : '';
+      const time = localStorage.getItem('time') | '';
+      // const loginToken = token === '' ? null : token;
+      if (!!token && time < Date.now()) return true;
+      return false;
+    };
     return (
       <>
         <Navigation />
@@ -37,7 +74,13 @@ class App extends React.Component {
         <div className={styles.contentDesktop}>
           <Router>
             <Switch>
-              <Route path="/generate" exact component={() => <Generate />} />
+              <Route path="/generate">
+                {x() === false ? (
+                  <Redirect to="/login" />
+                ) : (
+                  <Generate loginToken={this.state.loginToken} />
+                )}
+              </Route>
               <Route
                 path="/verify"
                 exact
@@ -46,6 +89,9 @@ class App extends React.Component {
                 )}
               />
               <Route path="/certificate/:id" exact component={Certificate} />
+              <Route path="/login">
+                <Login handler={this.handler} />
+              </Route>
               <Route path="/" exact component={() => <Home />} />
             </Switch>
           </Router>
