@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../css/Verify.module.css';
+import { Jumbotron, Button } from 'react-bootstrap';
 import Verify from './Verify';
 
 class VerifyPortal extends React.Component {
@@ -12,13 +12,12 @@ class VerifyPortal extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     return (
-      <div className={styles.root}>
+      <Jumbotron>
         {this.state.toBeVerified ? (
           <Verify setCertiState={this.props.setCertiState} />
         ) : (
-          <React.Fragment>
+          <div className="my-3" align="center">
             <h1>Verify Certificates</h1>
             <p>
               This is the certificate verification site for Indian Institute of
@@ -26,19 +25,21 @@ class VerifyPortal extends React.Component {
             </p>
             <hr />
             <p>Click here to verify the certificates!</p>
-            <div
-              className={styles.btn}
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
               onClick={() => {
                 this.setState({
                   toBeVerified: true,
                 });
               }}
             >
-              Verify !
-            </div>
-          </React.Fragment>
+              Verify!
+            </Button>
+          </div>
         )}
-      </div>
+      </Jumbotron>
     );
   }
 }

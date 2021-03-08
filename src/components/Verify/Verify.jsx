@@ -4,6 +4,7 @@ import styles from '../../css/Verify.module.css';
 import { Redirect } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import { message, fail } from '../../css/FrontCertificate.module.css';
+
 export class Verify extends Component {
   constructor(props) {
     super(props);
@@ -60,9 +61,9 @@ export class Verify extends Component {
               </table>
             </React.Fragment>
           ) : this.state.data?.message ? (
-            <p className={clsx(message, fail)}>Sorry This ID does not exist</p>
+            <p className={clsx(message, fail)}>Sorry, this ID does not exist</p>
           ) : (
-            <div>
+            <div className="my-3" align="center">
               <h1>
                 Enter the Roll Number of the student or the Certificate ID of the
                 certificate
@@ -92,7 +93,7 @@ export class Verify extends Component {
                   }
                 }}
               >
-                <label>Roll no : </label>
+                <label>Roll no: </label>
                 <input className={styles.input} type="text" name="id" />
                 <input
                   style={{ display: 'block' }}

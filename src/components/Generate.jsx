@@ -1,5 +1,5 @@
 import React from 'react';
-import { Jumbotron, Button } from 'react-bootstrap';
+import { Jumbotron, Button, Row } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -15,9 +15,12 @@ class Generate extends React.Component {
       labelIdx: -1, // Index of the label which is currently uploaded
       isSizeUploadable: true,
       isResolutionUploadable: true,
+      isCheckButtonPressed: false,
+      resultData: [],
     };
 
     this.cert_canvas = React.createRef();
+
     this.clearCanvas = this.clearCanvas.bind(this);
     this.addTexts = this.addTexts.bind(this);
     this.initCanvas = this.initCanvas.bind(this);
@@ -26,6 +29,7 @@ class Generate extends React.Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.makeCertificate = this.makeCertificate.bind(this);
     this.downloadZip = this.downloadZip.bind(this);
+
     // Dummy data
     this.fields = [
       { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
@@ -38,6 +42,7 @@ class Generate extends React.Component {
     this.result_data = [];
     this.certID = null;
   }
+
   /*
   Clears all text from canvas leaving only certificate image
   */
@@ -167,48 +172,24 @@ class Generate extends React.Component {
 
   /*
   Downloads the Zip of all the PDFs
+  Implemented from: https://stackoverflow.com/a/56783750/10307491
   */
   downloadZip = () => {
     const canvas = this.cert_canvas.current;
+    const ctx = canvas.getContext('2d');
     const quality = 0.5;
     const zip = new JSZip();
     const zipName = `certificate-${new Date()
       .toLocaleDateString('gu-IN')
       .split('/')
       .join('-')}.zip`;
-
-    // Implemented from: https://stackoverflow.com/a/56783750/10307491
-    const imgData = canvas.toDataURL('image/jpeg', quality);
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'px',
-      format: [canvas.width, canvas.height],
-    });
-    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
-    var pdfName = 'Certificate.pdf';
-    zip.file(pdfName, pdf.output('blob'));
-    zip.generateAsync({ type: 'blob' }).then(function (content) {
-      saveAs(content, zipName);
-    });
-  };
-
-  replaceText = () => {
-    const quality = 0.5;
-    const zip = new JSZip();
-    const zipName = `certificate-${new Date()
-      .toLocaleDateString('gu-IN')
-      .split('/')
-      .join('-')}.zip`;
-
+    this.fields = this.originalFields;
     this.state.result_data.forEach((data) => {
-      const canvas = this.cert_canvas.current;
-      const ctx = canvas.getContext('2d');
       this.clearCanvas();
       for (var field of this.fields) {
         // 0.0003 because it scaled the font well
         ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
         ctx.fillText(data[field.text], field.x, field.y);
-        // i += 1;
       }
 
       const imgData = canvas.toDataURL('image/jpeg', quality);
@@ -226,6 +207,7 @@ class Generate extends React.Component {
       saveAs(content, zipName);
     });
   };
+
   uploadData = () => {
     return (
       <div className={styles.root}>
@@ -309,6 +291,26 @@ class Generate extends React.Component {
       </div>
     );
   };
+
+  /*
+  Replaces default placeholder data with real data to see how the certificate
+  looks
+  */
+  replaceText = () => {
+    if (this.state.isCheckButtonPressed === false) {
+      const firstData = this.state.result_data[0];
+      this.originalFields = [];
+      for (var field of this.fields) {
+        this.originalFields.push({ ...field });
+        field.text = firstData[field.text];
+      }
+      this.addTexts();
+      this.setState({
+        isCheckButtonPressed: true,
+      });
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
@@ -330,27 +332,31 @@ class Generate extends React.Component {
             height="0"
             className="my-5"
           />
-          <Button
-            variant="primary"
-            size="lg"
-            type="submit"
-            onClick={() => {
-              this.downloadZip();
-            }}
-          >
-            Download Certificates
-          </Button>
-          <Button
-            variant="primary"
-            size="lg"
-            type="submit"
-            style={{ marginLeft: 4 }}
-            onClick={() => {
-              this.replaceText();
-            }}
-          >
-            Check
-          </Button>
+          <Row className="d-flex justify-content-center">
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              style={{ marginLeft: 4 }}
+              onClick={() => {
+                this.replaceText();
+              }}
+              className="ml-3"
+            >
+              Check
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              onClick={() => {
+                this.downloadZip();
+              }}
+              className="ml-3"
+            >
+              Download Certificates
+            </Button>
+          </Row>
         </Jumbotron>
         {!this.state.isUploadButtonPressed &&
           // <Jumbotron>
