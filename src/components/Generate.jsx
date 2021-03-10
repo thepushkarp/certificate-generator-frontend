@@ -17,8 +17,32 @@ class Generate extends React.Component {
       isResolutionUploadable: true,
       isCheckButtonPressed: false,
       resultData: [],
+      columns: [],
     };
+    // this.cert_canvas = React.createRef();
 
+    // this.clearCanvas = this.clearCanvas.bind(this);
+    // this.addTexts = this.addTexts.bind(this);
+    // this.initCanvas = this.initCanvas.bind(this);
+    // this.onMouseUp = this.onMouseUp.bind(this);
+    // this.onMouseMove = this.onMouseMove.bind(this);
+    // this.onMouseDown = this.onMouseDown.bind(this);
+    // this.makeCertificate = this.makeCertificate.bind(this);
+    // this.downloadZip = this.downloadZip.bind(this);
+
+    // // Dummy data
+    // this.fields = [
+    //   { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
+    //   { text: 'Position', x: 400, y: 400, font: 64, isDragged: false },
+    //   { text: 'Sub Event Name', x: 600, y: 600, font: 64, isDragged: false },
+    //   { text: 'Academic Year', x: 800, y: 800, font: 64, isDragged: false },
+    //   { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
+    //   { text: 'Certificate ID', x: 1200, y: 1200, font: 42, isDragged: false },
+    // ];
+    // this.result_data = [];
+    // this.certID = null;
+  }
+  componentDidUpdate() {
     this.cert_canvas = React.createRef();
 
     this.clearCanvas = this.clearCanvas.bind(this);
@@ -31,18 +55,19 @@ class Generate extends React.Component {
     this.downloadZip = this.downloadZip.bind(this);
 
     // Dummy data
-    this.fields = [
-      { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
-      { text: 'Position', x: 400, y: 400, font: 64, isDragged: false },
-      { text: 'Sub Event Name', x: 600, y: 600, font: 64, isDragged: false },
-      { text: 'Academic Year', x: 800, y: 800, font: 64, isDragged: false },
-      { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
-      { text: 'Certificate ID', x: 1200, y: 1200, font: 42, isDragged: false },
-    ];
+    this.fields = this.state.columns.map((ele, i) => {
+      return {
+        text: ele,
+        x: (i + 1) * 200,
+        y: (i + 1) * 200,
+        font: 64,
+        isDragged: false,
+      };
+    });
+
     this.result_data = [];
     this.certID = null;
   }
-
   /*
   Clears all text from canvas leaving only certificate image
   */
@@ -251,8 +276,9 @@ class Generate extends React.Component {
 
               this.setState({
                 ...this.state,
-                result_data: resultData,
+                resultData: resultData,
                 certID: cert_id,
+                columns: columns,
               });
               console.log(this.state);
               this.setState({
