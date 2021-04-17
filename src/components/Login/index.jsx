@@ -19,7 +19,7 @@ const Login = (props) => {
           event.preventDefault();
           let formdata = new FormData(event.target);
           try {
-            const res = await fetch('https://cert-iiit.tk/login', {
+            const res = await fetch('https://cert-iiit.ml/login', {
               method: 'POST',
               body: formdata,
             });

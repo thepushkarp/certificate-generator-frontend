@@ -42,7 +42,7 @@ class Generate extends React.Component {
     // this.result_data = [];
     // this.certID = null;
   }
-  componentDidUpdate() {
+  componentDidMount() {
     this.cert_canvas = React.createRef();
 
     this.clearCanvas = this.clearCanvas.bind(this);
@@ -260,7 +260,7 @@ class Generate extends React.Component {
               }
             };
             try {
-              const res = await fetch('https://cert-iiit.tk/generate', {
+              const res = await fetch('https://cert-iiit.ml/generate', {
                 method: 'POST',
                 body: formdata,
               });
