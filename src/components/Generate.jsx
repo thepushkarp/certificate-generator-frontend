@@ -210,13 +210,15 @@ class Generate extends React.Component {
       zip.file(pdfName, pdf.output('blob'));
     });
     zip.generateAsync({ type: 'blob' }).then(async (content) => {
-      console.dir(content);
+      // console.dir(content);
+      const uploadData = new FormData();
+      const token = localStorage.getItem('token');
+      uploadData.append('id', this.state.certID);
+      uploadData.append('zip', content);
+      uploadData.append('token', token);
       await fetch('https://cert-iiit.ml/upload', {
         method: 'POST',
-        body: {
-          id: this.state.certID,
-          zip: content,
-        },
+        body: uploadData,
       }).then((response) => console.log(response));
       saveAs(content, zipName);
     });
@@ -230,6 +232,7 @@ class Generate extends React.Component {
           onSubmit={async (event) => {
             event.preventDefault();
             let formdata = new FormData(event.target);
+            console.log(formdata);
             var imgUrl = URL.createObjectURL(event.target[3].files[0]);
             var img = new Image();
             img.src = imgUrl;
