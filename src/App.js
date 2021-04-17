@@ -69,7 +69,7 @@ class App extends React.Component {
           <h1 className="display-4">Generate Certificates</h1>
           <p className="lead">
             This is the certificate generation site for Indian Institute of
-            Information Technology, Vadodara.
+            Information Technology, Vadodara,India.
           </p>
           <p className="lead">You need to be on a computer to use this generator.</p>
         </Jumbotron>

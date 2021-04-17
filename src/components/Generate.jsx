@@ -152,8 +152,8 @@ class Generate extends React.Component {
       const textLength = ctx.measureText(field.text).width;
       field.x = canX - textLength / 2;
       field.y = canY + fontSize / 2;
+      field.isDragged = true;
       this.addTexts();
-      this.state.fields[i].isDragged = true;
     }
     e.preventDefault();
   }
