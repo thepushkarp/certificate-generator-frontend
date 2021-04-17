@@ -18,29 +18,8 @@ class Generate extends React.Component {
       isCheckButtonPressed: false,
       resultData: [],
       columns: [],
+      fields: [],
     };
-    // this.cert_canvas = React.createRef();
-
-    // this.clearCanvas = this.clearCanvas.bind(this);
-    // this.addTexts = this.addTexts.bind(this);
-    // this.initCanvas = this.initCanvas.bind(this);
-    // this.onMouseUp = this.onMouseUp.bind(this);
-    // this.onMouseMove = this.onMouseMove.bind(this);
-    // this.onMouseDown = this.onMouseDown.bind(this);
-    // this.makeCertificate = this.makeCertificate.bind(this);
-    // this.downloadZip = this.downloadZip.bind(this);
-
-    // // Dummy data
-    // this.fields = [
-    //   { text: 'Name', x: 200, y: 200, font: 64, isDragged: false },
-    //   { text: 'Position', x: 400, y: 400, font: 64, isDragged: false },
-    //   { text: 'Sub Event Name', x: 600, y: 600, font: 64, isDragged: false },
-    //   { text: 'Academic Year', x: 800, y: 800, font: 64, isDragged: false },
-    //   { text: 'Date', x: 1000, y: 1000, font: 64, isDragged: false },
-    //   { text: 'Certificate ID', x: 1200, y: 1200, font: 42, isDragged: false },
-    // ];
-    // this.result_data = [];
-    // this.certID = null;
   }
   componentDidMount() {
     this.cert_canvas = React.createRef();
@@ -55,19 +34,11 @@ class Generate extends React.Component {
     this.downloadZip = this.downloadZip.bind(this);
 
     // Dummy data
-    this.fields = this.state.columns.map((ele, i) => {
-      return {
-        text: ele,
-        x: (i + 1) * 200,
-        y: (i + 1) * 200,
-        font: 64,
-        isDragged: false,
-      };
-    });
 
     this.result_data = [];
     this.certID = null;
   }
+
   /*
   Clears all text from canvas leaving only certificate image
   */
@@ -85,7 +56,8 @@ class Generate extends React.Component {
     const canvas = this.cert_canvas.current;
     const ctx = canvas.getContext('2d');
     this.clearCanvas();
-    for (var field of this.fields) {
+
+    for (var field of this.state.fields) {
       // 0.0003 because it scaled the font well
       ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
       ctx.fillText(field.text, field.x, field.y);
@@ -107,7 +79,7 @@ class Generate extends React.Component {
   On leaving mouse click, sets all text dragging property to false
   */
   onMouseUp(e) {
-    for (var field of this.fields) {
+    for (var field of this.state.fields) {
       field.isDragged = false;
     }
     this.setState({
@@ -123,7 +95,7 @@ class Generate extends React.Component {
     const canvas = this.cert_canvas.current;
     const ctx = canvas.getContext('2d');
     const i = this.state.labelIdx;
-    if (i !== -1 && this.fields[i].isDragged) {
+    if (i !== -1 && this.state.fields[i].isDragged) {
       const scaledCanvas = canvas.getBoundingClientRect();
       const canX =
         ((e.pageX - scaledCanvas.left - window.scrollX) / scaledCanvas.width) *
@@ -131,7 +103,7 @@ class Generate extends React.Component {
       const canY =
         ((e.pageY - scaledCanvas.top - window.scrollY) / scaledCanvas.height) *
         canvas.height;
-      const field = this.fields[i];
+      const field = this.state.fields[i];
       const fontSize = 0.0003 * field.font * canvas.width;
       const textLength = ctx.measureText(field.text).width;
       field.x = canX - textLength / 2;
@@ -158,8 +130,8 @@ class Generate extends React.Component {
       x,
       y,
       flag = false;
-    for (i in this.fields) {
-      const field = this.fields[i];
+    for (i in this.state.fields) {
+      const field = this.state.fields[i];
       // 0.0003 because it scaled the font well
       const fontSize = 0.0003 * field.font * canvas.width;
       const textLength = field.text.length * fontSize;
@@ -175,13 +147,13 @@ class Generate extends React.Component {
       this.setState({
         labelIdx: i,
       });
-      const field = this.fields[i];
+      const field = this.state.fields[i];
       const fontSize = 0.0003 * field.font * canvas.width;
       const textLength = ctx.measureText(field.text).width;
       field.x = canX - textLength / 2;
       field.y = canY + fontSize / 2;
       this.addTexts();
-      this.fields[i].isDragged = true;
+      this.state.fields[i].isDragged = true;
     }
     e.preventDefault();
   }
@@ -208,12 +180,21 @@ class Generate extends React.Component {
       .toLocaleDateString('gu-IN')
       .split('/')
       .join('-')}.zip`;
-    this.fields = this.originalFields;
-    this.state.result_data.forEach((data) => {
+
+    var initialfields = this.state.columns.map((ele, i) => {
+      return {
+        text: ele,
+        x: this.state.fields[i].x,
+        y: this.state.fields[i].y,
+        font: 64,
+      };
+    });
+    this.state.resultData.forEach((data) => {
       this.clearCanvas();
-      for (var field of this.fields) {
+      for (var field of initialfields) {
         // 0.0003 because it scaled the font well
         ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
+
         ctx.fillText(data[field.text], field.x, field.y);
       }
 
@@ -228,7 +209,15 @@ class Generate extends React.Component {
 
       zip.file(pdfName, pdf.output('blob'));
     });
-    zip.generateAsync({ type: 'blob' }).then(function (content) {
+    zip.generateAsync({ type: 'blob' }).then(async (content) => {
+      console.dir(content);
+      await fetch('https://cert-iiit.ml/upload', {
+        method: 'POST',
+        body: {
+          id: this.state.certID,
+          zip: content,
+        },
+      }).then((response) => console.log(response));
       saveAs(content, zipName);
     });
   };
@@ -266,19 +255,31 @@ class Generate extends React.Component {
               });
               if (res.status !== 200) throw new Error('Exception message');
               const result = await res.json();
+
               const { cert, columns, ...apiData } = result;
+              // console.l
               const cert_id = cert.id;
               var resultData = [];
 
               for (const object in apiData) {
                 resultData.push(apiData[object]);
               }
+              var fields = columns.map((ele, i) => {
+                return {
+                  text: ele,
+                  x: (i + 1) * 200,
+                  y: (i + 1) * 200,
+                  font: 64,
+                  isDragged: false,
+                };
+              });
 
               this.setState({
                 ...this.state,
                 resultData: resultData,
                 certID: cert_id,
                 columns: columns,
+                fields: fields,
               });
               console.log(this.state);
               this.setState({
@@ -324,9 +325,9 @@ class Generate extends React.Component {
   */
   replaceText = () => {
     if (this.state.isCheckButtonPressed === false) {
-      const firstData = this.state.result_data[0];
+      const firstData = this.state.resultData[0];
       this.originalFields = [];
-      for (var field of this.fields) {
+      for (var field of this.state.fields) {
         this.originalFields.push({ ...field });
         field.text = firstData[field.text];
       }
@@ -335,6 +336,7 @@ class Generate extends React.Component {
         isCheckButtonPressed: true,
       });
     }
+    console.log(this.originalFields);
   };
 
   render() {
