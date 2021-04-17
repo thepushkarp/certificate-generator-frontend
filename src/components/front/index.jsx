@@ -21,7 +21,7 @@ const Certificate = ({ match, location }) => {
     const fetchData = async () => {
       const test = new FormData();
       test.append('id', match.params.id.split('-').join('/').split('_').join('-'));
-      const res = await fetch('https://cert-iiit.tk/get', {
+      const res = await fetch('https://cert-iiit.ml/get', {
         method: 'POST',
         body: test,
       });

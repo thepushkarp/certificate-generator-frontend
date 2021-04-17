@@ -32,13 +32,16 @@ class App extends React.Component {
   componentDidMount() {
     const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
     const time = localStorage.getItem('time') | '';
-    console.log('hello');
     const loginToken = token === '' ? null : token;
-    if (time < Date.now())
+    if (loginToken === null) {
+      this.setState({
+        ...this.state,
+        islogedIn: false,
+      });
+    } else if (time < Date.now())
       this.setState({ ...this.state, loginToken, islogedIn: true });
   }
   handler(token, cTime) {
-    console.log('hello');
     this.setState({
       ...this.state,
       loginToken: token,
@@ -50,7 +53,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     const x = () => {
       const token = localStorage.getItem('token')
         ? localStorage.getItem('token')
@@ -62,12 +64,12 @@ class App extends React.Component {
     };
     return (
       <>
-        <Navigation />
+        <Navigation islogedIn={this.state.islogedIn} />
         <Jumbotron align="center" className={styles.contentMobile}>
           <h1 className="display-4">Generate Certificates</h1>
           <p className="lead">
             This is the certificate generation site for Indian Institute of
-            Information Technology, Vadodara.
+            Information Technology, Vadodara,India.
           </p>
           <p className="lead">You need to be on a computer to use this generator.</p>
         </Jumbotron>
@@ -90,9 +92,13 @@ class App extends React.Component {
               />
               <Route path="/certificate/:id" exact component={Certificate} />
               <Route path="/login">
-                <Login handler={this.handler} />
+                <Login handler={this.handler} islogedIn={this.state.islogedIn} />
               </Route>
-              <Route path="/" exact component={() => <Home />} />
+              <Route
+                path="/"
+                exact
+                component={() => <Home islogedIn={this.state.islogedIn} />}
+              />
             </Switch>
           </Router>
         </div>

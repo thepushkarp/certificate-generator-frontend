@@ -12,12 +12,16 @@ class Home extends React.Component {
           Technology, Vadodara
         </p>
         <hr className="my-4"></hr>
-        <p>Click here to generate the certificates!</p>
-        <Link to="/generate">
-          <Button variant="primary" size="lg">
-            Generate!
-          </Button>
-        </Link>
+        {this.props.islogedIn ? (
+          <React.Fragment>
+            <p>Click here to generate the certificates!</p>
+            <Link to="/generate">
+              <Button variant="primary" size="lg">
+                Generate!
+              </Button>
+            </Link>
+          </React.Fragment>
+        ) : null}
       </Jumbotron>
     );
   }
