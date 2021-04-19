@@ -4,13 +4,37 @@ class Footer extends React.Component {
   render() {
     return (
       <footer className="footer-copyright text-center py-3">
-        Made with &hearts; by&nbsp;
+        {`Made with ❤ by `}
         <a
-          href="https://github.com/iiitv/"
+          href="https://github.com/TanmayAmbadkar/"
           target="_blank"
           rel="noreferrer noopener"
         >
-          IIITV Coding Club
+          Tanmay
+        </a>
+        {`, `}
+        <a
+          href="https://github.com/thepushkarp/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Pushkar
+        </a>
+        {`, `}
+        <a
+          href="https://github.com/paditya198/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Aditya
+        </a>
+        {` and `}
+        <a
+          href="https://github.com/anujpuri72/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Anuj
         </a>
       </footer>
     );
