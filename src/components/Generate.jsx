@@ -3,8 +3,7 @@ import { Jumbotron, Button, Row } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import styles from '../css/Login.module.css';
-import { btn } from '../css/Verify.module.css';
+
 class Generate extends React.Component {
   constructor(props) {
     super(props);
@@ -226,7 +225,7 @@ class Generate extends React.Component {
 
   uploadData = () => {
     return (
-      <div className={styles.root}>
+      <Jumbotron>
         <h2>Upload Data</h2>
         <form
           onSubmit={async (event) => {
@@ -295,30 +294,32 @@ class Generate extends React.Component {
           }}
         >
           <div>
-            <label>Event </label>
-            <input className={styles.input} type="text" name="event" />
+            <label>Event:</label>
+            <br />
+            <input type="text" name="event" />
           </div>
           <div>
-            <label>Year </label>
-            <input className={styles.input} type="text" name="year" />
+            <label>Year:</label>
+            <br />
+            <input type="text" name="year" />
           </div>
           <div>
-            <label>CSV </label>
-            <input className={styles.input} type="file" name="csv" accept=".csv" />
+            <label>CSV:</label>
+            <br />
+            <input type="file" name="csv" accept=".csv" />
           </div>
           <div>
-            <label>Certificate </label>
-            <input
-              className={styles.input}
-              type="file"
-              name="image"
-              accept="image/jpeg, image/png"
-            />
+            <label>Certificate:</label>
+            <br />
+            <input type="file" name="image" accept="image/jpeg, image/png" />
           </div>
           <input type="hidden" name="token" value={this.props.loginToken} />
-          <input type="submit" className={btn} />
+          <br />
+          <Button variant="primary" size="lg" type="submit" className="ml-3">
+            Submit
+          </Button>
         </form>
-      </div>
+      </Jumbotron>
     );
   };
 
@@ -389,90 +390,7 @@ class Generate extends React.Component {
             </Button>
           </Row>
         </Jumbotron>
-        {!this.state.isUploadButtonPressed &&
-          // <Jumbotron>
-          //   <h1 align="center">Upload data </h1>
-          //   <Form align="center" className="my-5">
-          //     <Form.File
-          //       id="imgForm"
-          //       accept="image/jpeg, image/png"
-          //       onChange={(e) => {
-          //         if (e.target.files[0]) {
-          //           if (e.target.files[0].size > 1048576) {
-          //             this.setState({
-          //               isSizeUploadable: false,
-          //             });
-          //             return;
-          //           }
-          //           var imgUrl = URL.createObjectURL(e.target.files[0]);
-          //           var img = new Image();
-          //           img.src = imgUrl;
-          //           img.onload = () => {
-          //             if (img.width < 1754 && img.height < 1240) {
-          //               this.setState({
-          //                 isResolutionUploadable: false,
-          //                 isSizeUploadable: true,
-          //               });
-          //             } else {
-          //               this.setState({
-          //                 isImgUploaded: true,
-          //                 certImage: img,
-          //                 isResolutionUploadable: true,
-          //                 isSizeUploadable: true,
-          //               });
-          //             }
-          //           };
-          //         } else {
-          //           this.setState({ isImgUploaded: false });
-          //         }
-          //       }}
-          //     />
-          //     <div className="my-3">
-          //       <p>
-          //         {this.state.isSizeUploadable ? (
-          //           <React.Fragment>
-          //             {this.state.isImgUploaded ? (
-          //               <React.Fragment>
-          //                 The Certificate Image is{' '}
-          //                 <span style={{ color: 'green' }}>added</span>
-          //               </React.Fragment>
-          //             ) : this.state.isResolutionUploadable ? (
-          //               <React.Fragment>
-          //                 The Certificate Image is{' '}
-          //                 <span style={{ color: 'red' }}>not added</span>
-          //               </React.Fragment>
-          //             ) : (
-          //               <React.Fragment>
-          //                 <span style={{ color: 'red' }}>
-          //                   Minimum Dimensions of the image should be 1754 x 1240.
-          //                 </span>
-          //               </React.Fragment>
-          //             )}
-          //           </React.Fragment>
-          //         ) : (
-          //           <span style={{ color: 'red' }}>
-          //             The Maximum Size of image is 1MB.
-          //           </span>
-          //         )}
-          //       </p>
-          //       <Button
-          //         variant="primary"
-          //         size="lg"
-          //         type="submit"
-          //         disabled={!this.state.isImgUploaded}
-          //         onClick={() => {
-          //           this.setState({
-          //             isUploadButtonPressed: true,
-          //           });
-          //           this.makeCertificate();
-          //         }}
-          //       >
-          //         Upload Certificate Image
-          //       </Button>
-          //     </div>
-          //   </Form>
-          // </Jumbotron>
-          this.uploadData()}
+        {!this.state.isUploadButtonPressed && this.uploadData()}
       </React.Fragment>
     );
   }
