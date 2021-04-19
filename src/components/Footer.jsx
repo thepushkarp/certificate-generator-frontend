@@ -28,13 +28,21 @@ class Footer extends React.Component {
         >
           Aditya
         </a>
-        {` and `}
+        {`, `}
         <a
           href="https://github.com/anujpuri72/"
           target="_blank"
           rel="noreferrer noopener"
         >
           Anuj
+        </a>
+        {` and `}
+        <a
+          href="https://github.com/thecodepapaya/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Ashutosh
         </a>
       </footer>
     );
