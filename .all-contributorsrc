@@ -1,0 +1,70 @@
+{
+  "projectName": "Certificate Verification and Generation System for IIITV",
+  "projectOwner": "Pushkar Patel ",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "TanmayAmbadkar",
+      "name": "Tanmay Ambadkar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42721553?v=4",
+      "profile": "https://github.com/TanmayAmbadkar",
+      "contributions": [
+        "code",
+        "ideas",
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "thepushkarp",
+      "name": "Pushkar Patel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42088801?v=4",
+      "profile": "https://github.com/thepushkarp",
+      "contributions": [
+        "code",
+        "design",
+        "doc"
+      ]
+    },
+    {
+      "login": "pAditya198",
+      "name": "Aditya Prakash",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42460356?v=4",
+      "profile": "https://github.com/pAditya198",
+      "contributions": [
+        "code",
+        "bug",
+        "design"
+      ]
+    },
+    {
+      "login": "anujpuri72",
+      "name": "Anuj Puri",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42184782?v=4",
+      "profile": "https://github.com/anujpuri72",
+      "contributions": [
+        "code",
+        "bug",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "thecodepapaya",
+      "name": "Ashutosh Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42690541?v=4",
+      "profile": "https://github.com/thecodepapaya",
+      "contributions": [
+        "ideas",
+        "userTesting",
+        "projectManagement"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
