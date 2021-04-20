@@ -17,15 +17,15 @@ export class Verify extends Component {
   }
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     if (!this.state.isRollno) {
       return <Redirect to="/certificate/6534765453" />;
     } else {
       return (
-        <React.Fragment>
-          {!!this.state.data && !this.state.data?.message ? (
-            <React.Fragment>
-              <Jumbotron align="center">
+        <>
+          <Jumbotron align="center">
+            {!!this.state.data && !this.state.data?.message ? (
+              <>
                 <h1 className="display-4">Certificates Found</h1>
                 <table className={styles.table}>
                   <thead className={styles.table_header}>
@@ -61,53 +61,82 @@ export class Verify extends Component {
                     })}
                   </tbody>
                 </table>
-              </Jumbotron>
-            </React.Fragment>
-          ) : this.state.data?.message ? (
-            <Jumbotron align="center">
-              <p className={clsx(message, fail)}>Sorry, this ID does not exist</p>
-            </Jumbotron>
-          ) : (
-            <Jumbotron align="center">
-              <h1 className="display-5">
-                Enter the Roll Number of the student or the Certificate ID of the
-                certificate
-              </h1>
-              <form
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  if (event.target[0].value.toString().includes('/')) {
-                    this.props.history.push(
-                      `/certificate/${event.target[0].value
-                        .toString()
-                        .trim()
-                        .split('-')
-                        .join('_')
-                        .split('/')
-                        .join('-')}`
-                    );
-                  } else {
-                    const test = new FormData();
-                    test.append('id', `${event.target[0].value.toString().trim()}`);
-                    const res = await fetch('https://cert-iiit.ml/get', {
-                      method: 'POST',
-                      body: test,
-                    });
-                    const json = await res.json();
-                    this.setState({ data: json });
-                  }
-                }}
-              >
-                <label>Roll no: </label>
-                <input className={styles.input} type="text" name="id" />
-                <br />
-                <Button variant="primary" size="lg" type="submit" className="ml-3">
-                  Submit
-                </Button>
-              </form>
-            </Jumbotron>
-          )}
-        </React.Fragment>
+                <hr />
+                <div align="left">
+                  <p>Click here to go back home</p>
+                  <a href="/">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      type="submit"
+                      className="ml-3"
+                    >
+                      Home
+                    </Button>
+                  </a>
+                </div>
+              </>
+            ) : this.state.data?.message ? (
+              <>
+                <p className={clsx(message, fail)}>Sorry, this ID does not exist!</p>
+                <div align="left">
+                  <p>Click here to go back home</p>
+                  <a href="/">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      type="submit"
+                      className="ml-3"
+                    >
+                      Home
+                    </Button>
+                  </a>
+                </div>
+              </>
+            ) : (
+              <>
+                <h1 className="display-5">
+                  Enter the Roll Number or the Certificate ID
+                </h1>
+                <form
+                  onSubmit={async (event) => {
+                    event.preventDefault();
+                    if (event.target[0].value.toString().includes('/')) {
+                      this.props.history.push(
+                        `/certificate/${event.target[0].value
+                          .toString()
+                          .trim()
+                          .split('-')
+                          .join('_')
+                          .split('/')
+                          .join('-')}`
+                      );
+                    } else {
+                      const test = new FormData();
+                      test.append(
+                        'id',
+                        `${event.target[0].value.toString().trim()}`
+                      );
+                      const res = await fetch('https://cert-iiit.ml/get', {
+                        method: 'POST',
+                        body: test,
+                      });
+                      const json = await res.json();
+                      this.setState({ data: json });
+                    }
+                  }}
+                >
+                  <label>Roll no: </label>
+                  <input className={styles.input} type="text" name="id" required />
+                  <br />
+                  <Button variant="primary" size="lg" type="submit" className="ml-3">
+                    Submit
+                  </Button>
+                </form>
+              </>
+            )}
+          </Jumbotron>
+        </>
       );
     }
   }

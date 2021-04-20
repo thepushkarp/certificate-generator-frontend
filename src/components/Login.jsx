@@ -25,7 +25,7 @@ const Login = (props) => {
             });
             if (res.status !== 200) throw new Error('Exception message');
             const json = await res.json();
-            console.log(json);
+            // console.log(json);
             props.handler(json.token, Date.parse(Date(json.expiry)));
           } catch (e) {
             console.log(e);
@@ -35,12 +35,12 @@ const Login = (props) => {
         <div>
           <label>Username:</label>
           <br />
-          <input type="text" name="username" />
+          <input type="text" name="username" required />
         </div>
         <div>
           <label>Password:</label>
           <br />
-          <input type="text" name="password" />
+          <input type="text" name="password" required />
         </div>
         <br />
         <input

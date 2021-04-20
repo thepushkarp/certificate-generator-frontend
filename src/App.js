@@ -26,8 +26,7 @@ class App extends React.Component {
     const time = localStorage.getItem('time') | '';
     const loginToken = token === '' ? null : token;
 
-    if (!!token && time < Date.now())
-      this.setState({ ...this.state, loginToken, islogedIn: true });
+    if (!!token && time < Date.now()) this.setState({ loginToken, islogedIn: true });
   }
 
   componentDidMount() {
@@ -36,7 +35,6 @@ class App extends React.Component {
     const loginToken = token === '' ? null : token;
     if (loginToken === null) {
       this.setState({
-        ...this.state,
         islogedIn: false,
       });
     } else if (time < Date.now())
@@ -45,7 +43,6 @@ class App extends React.Component {
 
   handler(token, cTime) {
     this.setState({
-      ...this.state,
       loginToken: token,
       time: cTime,
       islogedIn: true,
@@ -60,7 +57,6 @@ class App extends React.Component {
         ? localStorage.getItem('token')
         : '';
       const time = localStorage.getItem('time') | '';
-      // const loginToken = token === '' ? null : token;
       if (!!token && time < Date.now()) return true;
       return false;
     };
