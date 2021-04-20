@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Jumbotron } from 'react-bootstrap';
-import styles from '../../css/FrontCertificate.module.css';
+import styles from '../css/FrontCertificate.module.css';
 import clsx from 'clsx';
 
 const Certificate = ({ match, location }) => {

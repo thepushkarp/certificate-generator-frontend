@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import React, { Component } from 'react';
-import styles from '../../css/Verify.module.css';
+import styles from '../css/Verify.module.css';
 import { Redirect } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-import { message, fail } from '../../css/FrontCertificate.module.css';
+import { message, fail } from '../css/FrontCertificate.module.css';
 import { Jumbotron, Button } from 'react-bootstrap';
 
 export class Verify extends Component {
