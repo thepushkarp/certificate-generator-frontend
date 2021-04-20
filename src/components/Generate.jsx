@@ -218,7 +218,8 @@ class Generate extends React.Component {
       await fetch('https://cert-iiit.ml/upload', {
         method: 'POST',
         body: uploadData,
-      }).then((response) => console.log(response));
+      });
+      // .then((response) => console.log(response));
       saveAs(content, zipName);
     });
   };
@@ -231,7 +232,7 @@ class Generate extends React.Component {
           onSubmit={async (event) => {
             event.preventDefault();
             let formdata = new FormData(event.target);
-            console.log(formdata);
+            // console.log(formdata);
             var imgUrl = URL.createObjectURL(event.target[3].files[0]);
             var img = new Image();
             img.src = imgUrl;
@@ -259,7 +260,6 @@ class Generate extends React.Component {
               const result = await res.json();
 
               const { cert, columns, ...apiData } = result;
-              // console.l
               const cert_id = cert.id;
               var resultData = [];
 
@@ -282,7 +282,7 @@ class Generate extends React.Component {
                 columns: columns,
                 fields: fields,
               });
-              console.log(this.state);
+              // console.log(this.state);
               this.setState({
                 isUploadButtonPressed: true,
               });
@@ -339,12 +339,12 @@ class Generate extends React.Component {
         isCheckButtonPressed: true,
       });
     }
-    console.log(this.originalFields);
+    // console.log(this.originalFields);
   };
 
   render() {
     return (
-      <React.Fragment>
+      <>
         <Jumbotron
           style={{
             display: this.state.isUploadButtonPressed ? 'block' : 'none',
@@ -388,9 +388,18 @@ class Generate extends React.Component {
               Download Certificates
             </Button>
           </Row>
+          <hr />
+          <div align="left">
+            <p>Click here to go back home</p>
+            <a href="/">
+              <Button variant="primary" size="lg" type="submit" className="ml-3">
+                Home
+              </Button>
+            </a>
+          </div>
         </Jumbotron>
         {!this.state.isUploadButtonPressed && this.uploadData()}
-      </React.Fragment>
+      </>
     );
   }
 }

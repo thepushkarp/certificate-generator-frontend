@@ -57,7 +57,6 @@ class App extends React.Component {
         ? localStorage.getItem('token')
         : '';
       const time = localStorage.getItem('time') | '';
-      // const loginToken = token === '' ? null : token;
       if (!!token && time < Date.now()) return true;
       return false;
     };

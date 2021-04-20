@@ -18,7 +18,7 @@ const Certificate = ({ match, location }) => {
   });
 
   useEffect(() => {
-    console.log(match);
+    // console.log(match);
     const fetchData = async () => {
       const test = new FormData();
       test.append('id', match.params.id.split('-').join('/').split('_').join('-'));
@@ -35,21 +35,21 @@ const Certificate = ({ match, location }) => {
   return (
     <Jumbotron>
       {!state?.message ? (
-        <React.Fragment>
+        <>
           <p className={clsx(styles.message, styles.success)}>Found Successfully</p>
           <hr />
-          <div className={styles.details}>Name : {state.certificate.name}</div>
-          <div className={styles.details}>Roll : {state.certificate.rollno}</div>
-          <div className={styles.details}>Event : {state.certificate.event}</div>
-          <div className={styles.details}>Year : {state.certificate.year}</div>
-          <div className={styles.details}>Issued on : {state.certificate.date}</div>
+          <div className={styles.details}>Name: {state.certificate.name}</div>
+          <div className={styles.details}>Roll: {state.certificate.rollno}</div>
+          <div className={styles.details}>Event: {state.certificate.event}</div>
+          <div className={styles.details}>Year: {state.certificate.year}</div>
+          <div className={styles.details}>Issued on: {state.certificate.date}</div>
           <div className={styles.details}>
-            Certificate ID : {state.certificate.cert_id}
+            Certificate ID: {state.certificate.cert_id}
           </div>
           {state.certificate.file ? (
-            <React.Fragment>
+            <>
               <hr />
-              <p className={styles.details}>Certificate :</p>
+              <p className={styles.details}>Certificate:</p>
               <div style={{ height: 1240 }}>
                 <object
                   data={`https://cert-iiit.ml${state.certificate.file}`}
@@ -58,19 +58,19 @@ const Certificate = ({ match, location }) => {
                   height="100%"
                 >
                   <p>
-                    Alternative text - include a link{' '}
+                    {'Link '}
                     <a href={`https://cert-iiit.ml${state.certificate.file}`}>
-                      to the PDF!
+                      {' to the PDF'}
                     </a>
                   </p>
                 </object>
               </div>
-            </React.Fragment>
+            </>
           ) : null}
-        </React.Fragment>
+        </>
       ) : (
         <p className={clsx(styles.message, styles.fail)}>
-          Sorry This ID does not exist
+          Sorry This ID does not exist!
         </p>
       )}
       <hr />
