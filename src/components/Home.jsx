@@ -9,7 +9,7 @@ class Home extends React.Component {
         <h1 className="display-4">Verify Certificates</h1>
         <p className="lead">
           This is the certificate verification site for Indian Institute of
-          Information Technology, Vadodara
+          Information Technology Vadodara
         </p>
         <hr className="my-4"></hr>
         <p>Click here to verify the certificates!</p>

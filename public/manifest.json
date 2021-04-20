@@ -1,7 +1,14 @@
 {
-  "short_name": "Certificate Generator",
-  "name": "Certificate Generator",
-  "icons": [],
+  "short_name": "IIITV Certificate Verification and Generation System",
+  "name": "Indian Institute of Information Technology Vadodara's Certificate Verification and Generation System",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
