@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { btn } from '../../css/Verify.module.css';
+import { Button, Jumbotron } from 'react-bootstrap';
 import styles from '../../css/FrontCertificate.module.css';
 import clsx from 'clsx';
 
@@ -16,6 +16,7 @@ const Certificate = ({ match, location }) => {
       date: '',
     },
   });
+
   useEffect(() => {
     console.log(match);
     const fetchData = async () => {
@@ -30,8 +31,9 @@ const Certificate = ({ match, location }) => {
     };
     fetchData();
   }, [match]);
+
   return (
-    <section className={styles.root}>
+    <Jumbotron>
       {!state?.message ? (
         <React.Fragment>
           <p className={clsx(styles.message, styles.success)}>Found Successfully</p>
@@ -50,14 +52,14 @@ const Certificate = ({ match, location }) => {
               <p className={styles.details}>Certificate :</p>
               <div style={{ height: 1240 }}>
                 <object
-                  data={`https://cert-iiit.tk${state.certificate.file}`}
+                  data={`https://cert-iiit.ml${state.certificate.file}`}
                   type="application/pdf"
                   width="100%"
                   height="100%"
                 >
                   <p>
                     Alternative text - include a link{' '}
-                    <a href={`https://cert-iiit.tk${state.certificate.file}`}>
+                    <a href={`https://cert-iiit.ml${state.certificate.file}`}>
                       to the PDF!
                     </a>
                   </p>
@@ -75,10 +77,12 @@ const Certificate = ({ match, location }) => {
       <div>
         <p>Click here to go back home</p>
         <a href="/">
-          <div className={btn}>Home</div>
+          <Button variant="primary" size="lg" type="submit" className="ml-3">
+            Home
+          </Button>
         </a>
       </div>
-    </section>
+    </Jumbotron>
   );
 };
 
