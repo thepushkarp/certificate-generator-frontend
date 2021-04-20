@@ -127,7 +127,7 @@ export class Verify extends Component {
                   }}
                 >
                   <label>Roll no: </label>
-                  <input className={styles.input} type="text" name="id" />
+                  <input className={styles.input} type="text" name="id" required />
                   <br />
                   <Button variant="primary" size="lg" type="submit" className="ml-3">
                     Submit

@@ -8,12 +8,10 @@ class Generate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isImgUploaded: false, // To check if image is uploaded
       isUploadButtonPressed: false, //To check if user has pressed the upload button
       certImage: null, // Image of certificate
       labelIdx: -1, // Index of the label which is currently uploaded
-      isSizeUploadable: true,
-      isResolutionUploadable: true,
+      isImageUploadable: false,
       isCheckButtonPressed: false,
       resultData: [],
       columns: [],
@@ -232,85 +230,89 @@ class Generate extends React.Component {
           onSubmit={async (event) => {
             event.preventDefault();
             let formdata = new FormData(event.target);
-            // console.log(formdata);
+            var imgSize = event.target[3].files[0].size;
             var imgUrl = URL.createObjectURL(event.target[3].files[0]);
             var img = new Image();
             img.src = imgUrl;
             img.onload = () => {
               if (img.width < 1754 && img.height < 1240) {
-                this.setState({
-                  isResolutionUploadable: false,
-                  isSizeUploadable: true,
-                });
+                alert('Image dimensions are too small!');
+              } else if (imgSize > 1048576) {
+                alert('Image size is too large!');
               } else {
                 this.setState({
-                  isImgUploaded: true,
                   certImage: img,
-                  isResolutionUploadable: true,
-                  isSizeUploadable: true,
+                  isImageUploadable: true,
                 });
               }
             };
-            try {
-              const res = await fetch('https://cert-iiit.ml/generate', {
-                method: 'POST',
-                body: formdata,
-              });
-              if (res.status !== 200) throw new Error('Exception message');
-              const result = await res.json();
+            if (this.state.isImageUploadable) {
+              try {
+                const res = await fetch('https://cert-iiit.ml/generate', {
+                  method: 'POST',
+                  body: formdata,
+                });
+                if (res.status !== 200) throw new Error('Exception message');
+                const result = await res.json();
 
-              const { cert, columns, ...apiData } = result;
-              const cert_id = cert.id;
-              var resultData = [];
+                const { cert, columns, ...apiData } = result;
+                const cert_id = cert.id;
+                var resultData = [];
 
-              for (const object in apiData) {
-                resultData.push(apiData[object]);
+                for (const object in apiData) {
+                  resultData.push(apiData[object]);
+                }
+                var fields = columns.map((ele, i) => {
+                  return {
+                    text: ele,
+                    x: (i + 1) * 200,
+                    y: (i + 1) * 200,
+                    font: 64,
+                    isDragged: false,
+                  };
+                });
+
+                this.setState({
+                  resultData: resultData,
+                  certID: cert_id,
+                  columns: columns,
+                  fields: fields,
+                });
+                // console.log(this.state);
+                this.setState({
+                  isUploadButtonPressed: true,
+                });
+                this.makeCertificate();
+              } catch (e) {
+                console.log(e);
               }
-              var fields = columns.map((ele, i) => {
-                return {
-                  text: ele,
-                  x: (i + 1) * 200,
-                  y: (i + 1) * 200,
-                  font: 64,
-                  isDragged: false,
-                };
-              });
-
-              this.setState({
-                resultData: resultData,
-                certID: cert_id,
-                columns: columns,
-                fields: fields,
-              });
-              // console.log(this.state);
-              this.setState({
-                isUploadButtonPressed: true,
-              });
-              this.makeCertificate();
-            } catch (e) {
-              console.log(e);
             }
           }}
         >
           <div>
             <label>Event:</label>
             <br />
-            <input type="text" name="event" />
+            <input type="text" name="event" required />
           </div>
           <div>
             <label>Year:</label>
             <br />
-            <input type="text" name="year" />
+            <input type="text" name="year" required />
           </div>
           <div>
             <label>CSV:</label>
             <br />
-            <input type="file" name="csv" accept=".csv" />
+            <input type="file" name="csv" accept=".csv" required />
           </div>
           <div>
             <label>Certificate:</label>
             <br />
-            <input type="file" name="image" accept="image/jpeg, image/png" />
+            <input
+              type="file"
+              name="image"
+              accept="image/jpeg, image/png"
+              required
+            />
           </div>
           <input type="hidden" name="token" value={this.props.loginToken} />
           <br />

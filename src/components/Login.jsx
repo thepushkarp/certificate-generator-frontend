@@ -35,12 +35,12 @@ const Login = (props) => {
         <div>
           <label>Username:</label>
           <br />
-          <input type="text" name="username" />
+          <input type="text" name="username" required />
         </div>
         <div>
           <label>Password:</label>
           <br />
-          <input type="text" name="password" />
+          <input type="text" name="password" required />
         </div>
         <br />
         <input
