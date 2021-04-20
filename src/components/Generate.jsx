@@ -277,7 +277,6 @@ class Generate extends React.Component {
               });
 
               this.setState({
-                ...this.state,
                 resultData: resultData,
                 certID: cert_id,
                 columns: columns,
