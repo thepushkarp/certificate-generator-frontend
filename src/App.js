@@ -37,8 +37,7 @@ class App extends React.Component {
       this.setState({
         islogedIn: false,
       });
-    } else if (time < Date.now())
-      this.setState({ ...this.state, loginToken, islogedIn: true });
+    } else if (time < Date.now()) this.setState({ loginToken, islogedIn: true });
   }
 
   handler(token, cTime) {
