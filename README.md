@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="https://certificate-generator-iiitv.vercel.app"><img alt="Vercel Deployment" src="https://vercelbadge.vercel.app/api/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
+  <a href="https://lgtm.com/projects/g/thepushkarp/certificate-generator-frontend"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/github/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
   <a href="https://github.com/thepushkarp/certificate-generator-frontend/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
   <a href="https://lgtm.com/projects/g/thepushkarp/certificate-generator-frontend"><img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/github/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
   <a href="https://github.com/thepushkarp/certificate-generator-frontend/stargazers"><img alt="Stargazers" src="https://img.shields.io/github/stars/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
