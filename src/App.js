@@ -15,24 +15,21 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    const loginToken = localStorage.getItem('token') ?? null;
+    const time = localStorage.getItem('time') | '';
+    const loginCheck = Boolean(!!loginToken && time < Date.now());
+
     this.state = {
-      certificateData: null,
-      loginToken: null,
-      islogedIn: null,
+      loginToken: loginToken,
+      islogedIn: loginCheck,
     };
 
     this.handler = this.handler.bind(this);
-    const token = localStorage.getItem('token') ?? '';
-    const time = localStorage.getItem('time') | '';
-    const loginToken = token === '' ? null : token;
-
-    if (!!token && time < Date.now()) this.setState({ loginToken, islogedIn: true });
   }
 
   componentDidMount() {
-    const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
+    const loginToken = localStorage.getItem('token') ?? null;
     const time = localStorage.getItem('time') | '';
-    const loginToken = token === '' ? null : token;
     if (loginToken === null) {
       this.setState({
         islogedIn: false,
@@ -81,11 +78,7 @@ class App extends React.Component {
             <Route path="/login">
               <Login handler={this.handler} islogedIn={this.state.islogedIn} />
             </Route>
-            <Route
-              path="/"
-              exact
-              component={() => <Home islogedIn={this.state.islogedIn} />}
-            />
+            <Route path="/" exact component={() => <Home />} />
           </Switch>
         </Router>
         <Footer />
