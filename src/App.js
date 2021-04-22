@@ -40,7 +40,6 @@ class App extends React.Component {
   handler(token, cTime) {
     this.setState({
       loginToken: token,
-      time: cTime,
       islogedIn: true,
     });
     localStorage.setItem('token', token);
