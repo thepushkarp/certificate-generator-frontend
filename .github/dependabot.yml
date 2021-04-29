@@ -8,6 +8,8 @@ updates:
 - package-ecosystem: npm
   directory: "/"
   schedule:
-    interval: weekly
-    time: "23:30"
+    interval: monthly
+    time: "08:30"
+    timezone: Asia/Kolkata
   open-pull-requests-limit: 10
+  
