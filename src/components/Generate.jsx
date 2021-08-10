@@ -287,50 +287,51 @@ class Generate extends React.Component {
                 });
               }
             };
+            setTimeout(async () => {
+              if (this.state.isImageUploadable) {
+                try {
+                  const res = await fetch('https://cert-iiit.ml/generate', {
+                    method: 'POST',
+                    body: formdata,
+                  });
+                  if (res.status !== 200) throw new Error('Exception message');
+                  const result = await res.json();
 
-            if (this.state.isImageUploadable) {
-              try {
-                const res = await fetch('https://cert-iiit.ml/generate', {
-                  method: 'POST',
-                  body: formdata,
-                });
-                if (res.status !== 200) throw new Error('Exception message');
-                const result = await res.json();
+                  const { cert, columns, ...apiData } = result;
+                  const cert_id = cert.id;
+                  var resultData = [];
 
-                const { cert, columns, ...apiData } = result;
-                const cert_id = cert.id;
-                var resultData = [];
+                  for (const object in apiData) {
+                    resultData.push(apiData[object]);
+                  }
+                  var fields = columns.map((ele, i) => {
+                    return {
+                      text: ele,
+                      x: (i + 1) * 200,
+                      y: (i + 1) * 200,
+                      font: 64,
+                      isDragged: false,
+                    };
+                  });
 
-                for (const object in apiData) {
-                  resultData.push(apiData[object]);
+                  this.setState({
+                    resultData: resultData,
+                    certID: cert_id,
+                    columns: columns,
+                    fields: fields,
+                  });
+                  // console.log(this.state);
+                  this.setState({
+                    isUploadButtonPressed: true,
+                  });
+                  // console.log(this.state);
+                  this.makeCertificate();
+                  // console.log('button pressed');
+                } catch (e) {
+                  console.log(e);
                 }
-                var fields = columns.map((ele, i) => {
-                  return {
-                    text: ele,
-                    x: (i + 1) * 200,
-                    y: (i + 1) * 200,
-                    font: 64,
-                    isDragged: false,
-                  };
-                });
-
-                this.setState({
-                  resultData: resultData,
-                  certID: cert_id,
-                  columns: columns,
-                  fields: fields,
-                });
-                // console.log(this.state);
-                this.setState({
-                  isUploadButtonPressed: true,
-                });
-                // console.log(this.state);
-                this.makeCertificate();
-                // console.log('button pressed');
-              } catch (e) {
-                console.log(e);
               }
-            }
+            }, 1000);
           }}
         >
           <div>
