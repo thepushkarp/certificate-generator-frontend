@@ -3,6 +3,7 @@ import { Jumbotron, Button, Row } from 'react-bootstrap';
 import { jsPDF } from 'jspdf';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { withRouter } from 'react-router-dom';
 
 class Generate extends React.Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class Generate extends React.Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.makeCertificate = this.makeCertificate.bind(this);
     this.downloadZip = this.downloadZip.bind(this);
+    this.submitZip = this.submitZip.bind(this);
 
     // Dummy data
 
@@ -207,6 +209,46 @@ class Generate extends React.Component {
       zip.file(pdfName, pdf.output('blob'));
     });
     zip.generateAsync({ type: 'blob' }).then(async (content) => {
+      // console.dir(content)
+      // .then((response) => console.log(response));
+      saveAs(content, zipName);
+    });
+  };
+  submitZip = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const canvas = this.cert_canvas.current;
+    const ctx = canvas.getContext('2d');
+    const quality = 0.5;
+    const zip = new JSZip();
+    var initialfields = this.state.columns.map((ele, i) => {
+      return {
+        text: ele,
+        x: this.state.fields[i].x,
+        y: this.state.fields[i].y,
+        font: 64,
+      };
+    });
+    this.state.resultData.forEach((data) => {
+      this.clearCanvas();
+      for (var field of initialfields) {
+        // 0.0003 because it scaled the font well
+        ctx.font = `${0.0003 * field.font * canvas.width}px sans-serif`;
+
+        ctx.fillText(data[field.text], field.x, field.y);
+      }
+
+      const imgData = canvas.toDataURL('image/jpeg', quality);
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+      var pdfName = data['Filename'];
+
+      zip.file(pdfName, pdf.output('blob'));
+    });
+    zip.generateAsync({ type: 'blob' }).then(async (content) => {
       // console.dir(content);
       const uploadData = new FormData();
       const token = localStorage.getItem('token');
@@ -216,9 +258,8 @@ class Generate extends React.Component {
       await fetch('https://cert-iiit.ml/upload', {
         method: 'POST',
         body: uploadData,
-      });
-      // .then((response) => console.log(response));
-      saveAs(content, zipName);
+      }).then(() => this.props.history.push('/'));
+      // saveAs(content, zipName);
     });
   };
 
@@ -246,6 +287,7 @@ class Generate extends React.Component {
                 });
               }
             };
+
             if (this.state.isImageUploadable) {
               try {
                 const res = await fetch('https://cert-iiit.ml/generate', {
@@ -282,7 +324,9 @@ class Generate extends React.Component {
                 this.setState({
                   isUploadButtonPressed: true,
                 });
+                // console.log(this.state);
                 this.makeCertificate();
+                // console.log('button pressed');
               } catch (e) {
                 console.log(e);
               }
@@ -389,6 +433,17 @@ class Generate extends React.Component {
             >
               Download Certificates
             </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              onClick={() => {
+                this.submitZip();
+              }}
+              className="ml-3"
+            >
+              Submit Certificates
+            </Button>
           </Row>
           <hr />
           <div align="left">
@@ -406,4 +461,4 @@ class Generate extends React.Component {
   }
 }
 
-export default Generate;
+export default withRouter(Generate);
