@@ -11,7 +11,7 @@
     "file-saver": "^2.0.5",
     "jspdf": "^2.3.0",
     "jszip": "^3.5.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
