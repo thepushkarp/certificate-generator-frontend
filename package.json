@@ -10,7 +10,7 @@
     "clsx": "^1.1.1",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
-    "jszip": "^3.5.0",
+    "jszip": "^3.8.0",
     "node-sass": "^7.0.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
