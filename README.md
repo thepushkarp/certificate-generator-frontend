@@ -3,7 +3,6 @@
 <h1 align="center"> Certificate Verification and Generation System for IIITV</h1>
 
 <p align="center">
-  <a href="https://certificate-generator-iiitv.vercel.app"><img alt="Vercel Deployment" src="https://vercelbadge.vercel.app/api/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
   <a href="https://lgtm.com/projects/g/thepushkarp/certificate-generator-frontend"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/github/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
   <a href="https://github.com/thepushkarp/certificate-generator-frontend/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
   <a href="https://lgtm.com/projects/g/thepushkarp/certificate-generator-frontend"><img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/github/thepushkarp/certificate-generator-frontend?style=for-the-badge"></a>
@@ -15,11 +14,11 @@
 
 ---
 
-This system is deployed at [https://certificate-generator-iiitv.vercel.app/](https://certificate-generator-iiitv.vercel.app/). The backend can be found at [CertificateGenerator](https://github.com/TanmayAmbadkar/CertificateGenerator).
+This system is deployed at [https://mycertificatesgymkhana.iiitvadodara.ac.in/](https://mycertificatesgymkhana.iiitvadodara.ac.in/). The backend can be found at [CertificateGenerator](https://github.com/TanmayAmbadkar/CertificateGenerator).
 
 ## How to use?
 
-- Go to [https://certificate-generator-iiitv.vercel.app/](https://certificate-generator-iiitv.vercel.app/)
+- Go to [https://mycertificatesgymkhana.iiitvadodara.ac.in/](https://mycertificatesgymkhana.iiitvadodara.ac.in/)
 - Click on the `Verify` button
 - Enter your Roll number in the input box
 - If certificates do not exist for your roll number, you'll get a message telling that this ID does not exists.
